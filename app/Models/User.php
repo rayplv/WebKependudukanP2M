@@ -45,4 +45,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * The roles that belong to the user.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Role>
+    */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 }
