@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 22, 2025 at 12:20 PM
+-- Generation Time: Jul 22, 2025 at 12:56 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -25,6 +25,63 @@ DELIMITER $$
 --
 -- Procedures
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `COUNT_KELUARGA` ()   BEGIN
+    SELECT COUNT(*) AS jumlah_keluarga FROM data_keluarga;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `COUNT_PENDUDUK` ()   BEGIN
+    SELECT COUNT(*) AS jumlah_penduduk FROM data_pribadi;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SHOW_DATA_WARGA_DESA` ()   BEGIN
+    SELECT
+        dp.nama AS `Nama`,
+        dp.nik AS `NIK`,
+        dp.no_kk_id AS `No. KK`,
+        CONCAT(dp.tempat_lahir, ', ', DATE_FORMAT(dp.tanggal_lahir, '%d %M %Y')) AS `Tempat Tanggal Lahir`,
+        CASE dp.jenis_kelamin
+            WHEN 'LAKI-LAKI' THEN 'Laki-laki'
+            WHEN 'PEREMPUAN' THEN 'Perempuan'
+            ELSE '-'
+        END AS `Jenis Kelamin`
+    FROM data_pribadi dp
+    ORDER BY dp.nama;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SHOW_DETAIL_DATA_WARGA` (IN `p_nik` VARCHAR(20))   BEGIN
+    
+    SELECT
+        dp.no_kk_id AS `Nomor KK`,
+        dp.nik AS `Nomor NIK`,
+        dp.nama AS `Nama Lengkap`,
+        CONCAT(dp.tempat_lahir, ', ', DATE_FORMAT(dp.tanggal_lahir, '%d %M %Y')) AS `Tempat, Tanggal Lahir`,
+        TIMESTAMPDIFF(YEAR, dp.tanggal_lahir, CURDATE()) AS `Usia`,
+        pt.nama AS `Pendidikan Terakhir`,
+        IF(dp.golongan_darah = '-', '-', dp.golongan_darah) AS `Gol Darah`,
+        ag.nama AS `Agama`,
+        dp.status_perkawinan AS `Status Pernikahan`,
+        dk.rt AS RT,
+        dk.rw AS RW,
+        CONCAT(dk.alamat, ', RT ', dk.rt, ' / RW ', dk.rw, ', Kel. ', dk.desa, ', Kec. ', dk.kecamatan) AS `Alamat Lengkap`,
+        IF(dp.penyandang_disabilitas, 'Ya', 'Tidak') AS `Penyandang Disabilitas`
+    FROM data_pribadi dp
+    LEFT JOIN data_keluarga dk ON dp.no_kk_id = dk.no_kk
+    LEFT JOIN agama ag ON dp.agama_id = ag.id
+    LEFT JOIN pendidikan_terakhir pt ON dp.pendidikan_terakhir_id = pt.id
+    WHERE dp.nik = p_nik;
+
+    
+    SELECT
+        hk.nama AS `Hubungan`,
+        dp2.nama AS `Nama Anggota`,
+        dp2.nik AS `NIK`
+    FROM data_pribadi dp1
+    JOIN data_pribadi dp2 ON dp1.no_kk_id = dp2.no_kk_id
+    LEFT JOIN hubungan_keluarga hk ON dp2.hubungan_keluarga_id = hk.id
+    WHERE dp1.nik = p_nik
+    ORDER BY dp2.hubungan_keluarga_id;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SHOW_KK` (IN `p_no_kk` VARCHAR(20))   BEGIN
     
     SELECT
@@ -71,7 +128,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SHOW_KTP` (IN `p_nik` VARCHAR(20)) 
     SELECT
         dp.nik AS NIK,
         dp.nama AS Nama,
-        CONCAT(dp.tempat_lahir, ' / ', DATE_FORMAT(dp.tanggal_lahir, '%d-%m-%Y')) AS `Tempat / Tanggal Lahir`,
+        CONCAT(dp.tempat_lahir, ', ', DATE_FORMAT(dp.tanggal_lahir, '%d-%m-%Y')) AS `Tempat / Tanggal Lahir`,
         dp.jenis_kelamin AS `Jenis Kelamin`,
         dp.golongan_darah AS `Golongan Darah`,
         dk.alamat AS Alamat,
