@@ -8,11 +8,17 @@ export default {
         './resources/**/*.blade.php',
         './resources/**/*.js',
         './resources/**/*.vue',
+        "./app/Livewire/**/*.php",
     ],
     theme: {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                primary: '#6366F1',
+                secondary: '#F3F4F6', //  secondary/background color
+                accent: '#D1D5DB',   //  accent color
             },
         },
     },
