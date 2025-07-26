@@ -1,102 +1,152 @@
 <div>
-    <h1 class="text-2xl font-bold text-[#4B0082] mb-6">DATA WARGA DESA</h1>
-
     <div class="mb-4">
         <a href="{{ route('data-warga.index') }}" class="inline-flex items-center text-gray-600 hover:text-gray-800">
-            <x-heroicon-o-arrow-left class="h-5 w-5 mr-2" /> {{-- Heroicon --}}
+            <x-heroicon-o-arrow-left class="h-5 w-5 mr-2" />
             Detail Data Warga:
         </a>
     </div>
 
-    <x-card class="rounded-xl shadow-lg p-6">
-        <div class="flex justify-between items-center mb-6">
+    <x-card class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div class="flex justify-between items-start mb-6">
             <div>
-                <h2 class="text-2xl font-semibold text-gray-800">{{ $resident->nama_lengkap }}</h2>
-                <p class="text-gray-600">NIK: {{ $resident->nik }}</p>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">{{ $resident->nama }}</h2>
+                <p class="text-gray-600 font-mono text-lg">NIK: {{ substr($resident->nik, 0, -6) . '******' }}</p>
             </div>
-            <div class="flex space-x-2">
-                <x-button wire:click="editData" type="button" variant="info"
-                    class="bg-blue-500 hover:bg-blue-600 text-white flex items-center"> {{-- Adjusted button style --}}
-                    <x-heroicon-o-pencil class="h-4 w-4 mr-2" /> {{-- Heroicon --}}
-                    Edit Data
-                </x-button>
-                <x-button wire:click="hapusData" type="button" variant="danger"
-                    class="bg-red-600 hover:bg-red-700 text-white flex items-center"> {{-- Adjusted button style --}}
-                    <x-heroicon-o-trash class="h-4 w-4 mr-2" /> {{-- Heroicon --}}
-                    Hapus Data
-                </x-button>
+            <div class="flex flex-col items-end gap-3">
+                <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-[#C5B6E1] text-[#4E347E]">
+                    Status: Hidup
+                </span>
+                                <div class="flex space-x-2">
+                    <button wire:click="editData" type="button"
+                        class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 text-sm font-medium">
+                        <x-heroicon-o-pencil class="h-4 w-4 mr-2" />
+                        Edit Data
+                    </button>
+                    <button wire:click="hapusData" type="button"
+                        class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-sm font-medium">
+                        <x-heroicon-o-trash class="h-4 w-4 mr-2" />
+                        Hapus Data
+                    </button>
+                </div>
             </div>
         </div>
 
         @if (session()->has('message'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-                role="alert">
-                <span class="block sm:inline">{{ session('message') }}</span>
+            <div class="mb-4 p-4 rounded-lg bg-green-100 border border-green-400 text-green-700">
+                <div class="flex items-center">
+                    <x-heroicon-o-check-circle class="h-5 w-5 mr-2" />
+                    {{ session('message') }}
+                </div>
             </div>
         @endif
 
-        <p class="text-lg font-medium text-gray-700 mb-6">Status: <span
-                class="{{ $resident->status === 'Hidup' ? 'text-green-600' : 'text-red-600' }} font-bold">{{ $resident->status }}</span>
-        </p>
+        <!-- Informasi Pribadi -->
+        <div>
+            <h3 class="text-xl font-bold text-[#4E347E] mb-6">Informasi Pribadi</h3>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <!-- Informasi Dasar -->
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4 bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded border border-gray-200">Informasi Dasar</h4>
+                    <div class="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                        <div class="divide-y divide-gray-200">
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Nomor KK:</span>
+                                <div class="text-gray-900 font-mono text-sm">{{ substr($resident->no_kk_id, 0, -6) . '******' }}</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Nomor NIK:</span>
+                                <div class="text-gray-900 font-mono text-sm">{{ substr($resident->nik, 0, -6) . '******' }}</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Nama Lengkap:</span>
+                                <div class="text-gray-900 font-medium text-sm">{{ $resident->nama }}</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Tempat, Tanggal Lahir:</span>
+                                <div class="text-gray-900 text-sm">{{ $resident->tempat_lahir }}, {{ \Carbon\Carbon::parse($resident->tanggal_lahir)->format('d F Y') }}</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Usia:</span>
+                                <div class="text-gray-900 text-sm">{{ \Carbon\Carbon::parse($resident->tanggal_lahir)->age }} Tahun</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Pendidikan Terakhir:</span>
+                                <div class="text-gray-900 text-sm">{{ $resident->pendidikan->nama ?? 'ID: ' . $resident->pendidikan_terakhir_id }}</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Gol Darah:</span>
+                                <div class="text-gray-900 text-sm">{{ $resident->golongan_darah === '-' ? '-' : $resident->golongan_darah }}</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Agama:</span>
+                                <div class="text-gray-900 text-sm">{{ $resident->agama->nama ?? 'ID: ' . $resident->agama_id }}</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Status Pernikahan:</span>
+                                <div class="text-gray-900 text-sm">{{ $resident->status_perkawinan }}</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">RT:</span>
+                                <div class="text-gray-900 text-sm">02</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">RW:</span>
+                                <div class="text-gray-900 text-sm">01</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Alamat Lengkap:</span>
+                                <div class="text-gray-900 text-sm">Jl. Mawar Indah No. 10, RT 02 / RW 01, Kel. Mekar Jaya, Kec. Sukamaju, Kab. Bogor</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Penyandang Disabilitas:</span>
+                                <div class="text-gray-900 text-sm">{{ $resident->penyandang_disabilitas ? 'Ya' : 'Tidak' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-                <h3 class="text-lg font-semibold text-[#4B0082] mb-4">Informasi Pribadi</h3> {{-- Header color --}}
-                <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-700">
-                    <dt class="font-semibold text-gray-800">Nomor KK:</dt>
-                    <dd>{{ $resident->nomor_kk }}</dd>
+                <!-- Keluarga dalam Kartu Keluarga -->
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4 bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded border border-gray-200">Keluarga dalam Kartu Keluarga</h4>
+                    
+                    <div class="bg-white rounded-lg border border-gray-300 overflow-hidden shadow-sm">
+                        <table class="min-w-full">
+                            <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                                <tr>
+                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">Hubungan</th>
+                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">Nama</th>
+                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">NIK</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                    <td class="px-3 py-3 text-xs text-gray-900 font-medium">Kepala Keluarga</td>
+                                    <td class="px-3 py-3 text-xs text-gray-900 font-medium">{{ $resident->nama }}</td>
+                                    <td class="px-3 py-3 text-xs font-mono text-gray-600">{{ substr($resident->nik, 0, -6) . '******' }}</td>
+                                </tr>
+                                @if(isset($resident->keluarga_dalam_kk) && !empty($resident->keluarga_dalam_kk))
+                                    @foreach($resident->keluarga_dalam_kk as $keluarga)
+                                        @if($keluarga->nik !== $resident->nik)
+                                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                            <td class="px-3 py-3 text-xs text-gray-900">{{ $keluarga->hubungan }}</td>
+                                            <td class="px-3 py-3 text-xs text-gray-900">{{ $keluarga->nama_anggota }}</td>
+                                            <td class="px-3 py-3 text-xs font-mono text-gray-600">{{ substr($keluarga->nik, 0, -6) . '******' }}</td>
+                                        </tr>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
 
-                    <dt class="font-semibold text-gray-800">Nomor NIK:</dt>
-                    <dd>{{ $resident->nik }}</dd>
-
-                    <dt class="font-semibold text-gray-800">Nama Lengkap:</dt>
-                    <dd>{{ $resident->nama_lengkap }}</dd>
-
-                    <dt class="font-semibold text-gray-800">Tempat, Tanggal Lahir:</dt>
-                    <dd>{{ $resident->tempat_tanggal_lahir }}</dd>
-
-                    <dt class="font-semibold text-gray-800">Usia:</dt>
-                    <dd>{{ $resident->usia }}</dd>
-
-                    <dt class="font-semibold text-gray-800">Pendidikan Terakhir:</dt>
-                    <dd>{{ $resident->pendidikan_terakhir }}</dd>
-
-                    <dt class="font-semibold text-gray-800">Gol Darah:</dt>
-                    <dd>{{ $resident->gol_darah }}</dd>
-
-                    <dt class="font-semibold text-gray-800">Agama:</dt>
-                    <dd>{{ $resident->agama }}</dd>
-
-                    <dt class="font-semibold text-gray-800">Status Pernikahan:</dt>
-                    <dd>{{ $resident->status_pernikahan }}</dd>
-
-                    <dt class="font-semibold text-gray-800">RT:</dt>
-                    <dd>{{ $resident->rt }}</dd>
-
-                    <dt class="font-semibold text-gray-800">RW:</dt>
-                    <dd>{{ $resident->rw }}</dd>
-
-                    <dt class="font-semibold text-gray-800">Alamat Lengkap:</dt>
-                    <dd>{{ $resident->alamat_lengkap }}</dd>
-
-                    <dt class="font-semibold text-gray-800">Penyandang Disabilitas:</dt>
-                    <dd>{{ $resident->penyandang_disabilitas }}</dd>
-                </dl>
-            </div>
-
-            <div>
-                <h3 class="text-lg font-semibold text-[#4B0082] mb-4">Keluarga dalam KK</h3> {{-- Header color --}}
-                <x-table :headers="['Hubungan', 'Nama Anggota', 'NIK']">
-                    @foreach ($resident->keluarga_dalam_kk as $member)
-                        <tr class="hover:bg-gray-50"> {{-- Hover effect for rows --}}
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ $member->hubungan }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $member->nama_anggota }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $member->nik }}</td>
-                        </tr>
-                    @endforeach
-                </x-table>
+                    @if(isset($resident->keluarga_dalam_kk) && empty($resident->keluarga_dalam_kk))
+                        <div class="text-center py-6">
+                            <x-heroicon-o-user-group class="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                            <span class="text-sm text-gray-500">Data keluarga tidak tersedia</span>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </x-card>

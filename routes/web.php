@@ -8,6 +8,11 @@ use App\Livewire\TambahAkunBaru;
 use App\Livewire\TambahDataWarga;
 use Illuminate\Support\Facades\Route;
 
+// Login route
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
 // Group all routes under a layout (assuming 'app' layout)
 Route::middleware(['web'])->group(function () {
     Route::get('/', Dashboard::class)->name('dashboard');

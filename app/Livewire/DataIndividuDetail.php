@@ -10,28 +10,38 @@ class DataIndividuDetail extends Component {
     public function mount($id) {
         $this->residentId = $id;
         // For backend:
-        // $this->resident = Resident::findOrFail($id);
-        // For dummy data:
+        // $this->resident = DataPribadi::findOrFail($id);
+        // For dummy data using actual database structure:
         $this->resident = (object) [
-            'id'                     => 1,
-            'nama_lengkap'           => 'Budi Santoso',
-            'nik'                    => '32010101234567890',
-            'status'                 => 'Hidup',
-            'nomor_kk'               => '3201010001234567',
-            'tempat_tanggal_lahir'   => 'Bogor, 15 Agustus 1989',
-            'usia'                   => '35 Tahun',
-            'pendidikan_terakhir'    => 'S1',
-            'gol_darah'              => '-',
-            'agama'                  => 'Islam',
-            'status_pernikahan'      => 'Menikah',
-            'rt'                     => '02',
-            'rw'                     => '01',
-            'alamat_lengkap'         => 'Jl. Mawar Indah No. 10, RT 02 / RW 01, Kel. Mekar Jaya, Kec. Sukamaju, Kab. Bogor',
-            'penyandang_disabilitas' => 'Tidak',
-            'keluarga_dalam_kk'      => [
-                (object) ['hubungan' => 'Kepala Keluarga', 'nama_anggota' => 'Budi Santoso', 'nik' => '32010101234567890'],
-                (object) ['hubungan' => 'Istri', 'nama_anggota' => 'Ani Fitriani', 'nik' => '32010101234567891'],
-                (object) ['hubungan' => 'Anak', 'nama_anggota' => 'Joko Santoso', 'nik' => '32010101234567892'],
+            'nik'                     => '3201010101010001',
+            'no_kk_id'                => '3210010101010001',
+            'hubungan_keluarga_id'    => 1,
+            'nama'                    => 'BUDI SANTOSA',
+            'tempat_lahir'            => 'Bandung',
+            'tanggal_lahir'           => '1975-02-15',
+            'jenis_kelamin'           => 'LAKI-LAKI',
+            'golongan_darah'          => 'O',
+            'agama_id'                => 1,
+            'status_perkawinan'       => 'Kawin',
+            'tanggal_perkawinan'      => '1995-06-20',
+            'tanggal_perceraian'      => null,
+            'pendidikan_terakhir_id'  => 2,
+            'pekerjaan_id'            => 5,
+            'kewarganegaraan'         => 'WNI',
+            'penyandang_disabilitas'  => false,
+            'nama_ayah'               => 'SUDARSO',
+            'nama_ibu'                => 'SRI WAHYUNI',
+            // Relationship objects
+            'agama'                   => (object) ['nama' => 'Islam'],
+            'pendidikan'              => (object) ['nama' => 'TAMAT SD / SEDERAJAT'],
+            'pekerjaan'               => (object) ['nama' => 'Pegawai Negeri Sipil'],
+            'hubungan_keluarga'       => (object) ['nama' => 'KEPALA KELUARGA'],
+            'keluarga_dalam_kk'       => [
+                (object) ['hubungan' => 'KEPALA KELUARGA', 'nama_anggota' => 'BUDI SANTOSA', 'nik' => '3201010101010001'],
+                (object) ['hubungan' => 'ISTRI', 'nama_anggota' => 'SRI LESTARI', 'nik' => '3201010101010002'],
+                (object) ['hubungan' => 'ANAK', 'nama_anggota' => 'ANDI SANTOSA', 'nik' => '3201010101010003'],
+                (object) ['hubungan' => 'ANAK', 'nama_anggota' => 'NINA SANTOSA', 'nik' => '3201010101010004'],
+                (object) ['hubungan' => 'PEMBANTU', 'nama_anggota' => 'SUPARTO', 'nik' => '3201010101010005'],
             ],
         ];
     }
