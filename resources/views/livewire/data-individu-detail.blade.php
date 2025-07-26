@@ -13,21 +13,21 @@
                 <p class="text-gray-600 font-mono text-lg">NIK: {{ substr($resident->nik, 0, -6) . '******' }}</p>
             </div>
             <div class="flex flex-col items-end gap-3">
-                <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-[#C5B6E1] text-[#4E347E]">
-                    Status: Hidup
-                </span>
-                                <div class="flex space-x-2">
+                <div class="flex space-x-2">
                     <button wire:click="editData" type="button"
                         class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 text-sm font-medium">
                         <x-heroicon-o-pencil class="h-4 w-4 mr-2" />
                         Edit Data
                     </button>
-                    <button wire:click="hapusData" type="button"
+                    <button onclick="confirmDelete()" type="button"
                         class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-sm font-medium">
                         <x-heroicon-o-trash class="h-4 w-4 mr-2" />
                         Hapus Data
                     </button>
                 </div>
+                <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-[#C5B6E1] text-[#4E347E]">
+                    Status: Hidup
+                </span>
             </div>
         </div>
 
@@ -150,4 +150,44 @@
             </div>
         </div>
     </x-card>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-md mx-4 shadow-2xl">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                    <x-heroicon-o-exclamation-triangle class="h-6 w-6 text-red-600" />
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Hapus Data</h3>
+            </div>
+            <p class="text-gray-600 mb-6">Apakah Anda yakin ingin menghapus data warga ini? Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="flex space-x-3 justify-end">
+                <button onclick="closeDeleteModal()" type="button"
+                    class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-all duration-200 text-sm font-medium">
+                    Batal
+                </button>
+                <button onclick="confirmDeleteAction()" type="button"
+                    class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-sm font-medium">
+                    Hapus Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function confirmDelete() {
+        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteModal').classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('deleteModal').classList.remove('flex');
+    }
+
+    function confirmDeleteAction() {
+        @this.call('hapusData');
+        closeDeleteModal();
+    }
+    </script>
 </div>

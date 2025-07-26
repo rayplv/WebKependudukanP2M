@@ -56,6 +56,7 @@
             </li>
             <li>
                 <a href="#"
+                    onclick="confirmLogout(event)"
                     class="flex items-center p-3 rounded-xl transition-all duration-300 group text-white hover:bg-white hover:bg-opacity-20 hover:transform hover:scale-105">
                     <x-heroicon-o-arrow-right-on-rectangle class="h-5 w-5 mr-4 flex-shrink-0 text-[#ADC4DB] group-hover:text-white" />
                     <span class="font-medium">Keluar</span>
@@ -63,4 +64,45 @@
             </li>
         </ul>
     </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-md mx-4 shadow-2xl">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-[#376CB4] to-[#457BC5] rounded-full flex items-center justify-center mr-4">
+                    <x-heroicon-o-arrow-right-on-rectangle class="h-6 w-6 text-white" />
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Keluar</h3>
+            </div>
+            <p class="text-gray-600 mb-6">Apakah Anda yakin ingin keluar dari sistem?</p>
+            <div class="flex space-x-3 justify-end">
+                <button onclick="closeLogoutModal()" type="button"
+                    class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-all duration-200 text-sm font-medium">
+                    Batal
+                </button>
+                <button onclick="confirmLogoutAction()" type="button"
+                    class="px-4 py-2 bg-gradient-to-r from-[#376CB4] to-[#457BC5] text-white rounded-lg hover:from-[#2E5A99] hover:to-[#376CB4] transition-all duration-200 text-sm font-medium">
+                    Keluar
+                </button>
+            </div>
+        </div>
+    </div>
 </aside>
+
+<script>
+function confirmLogout(event) {
+    event.preventDefault();
+    document.getElementById('logoutModal').classList.remove('hidden');
+    document.getElementById('logoutModal').classList.add('flex');
+}
+
+function closeLogoutModal() {
+    document.getElementById('logoutModal').classList.add('hidden');
+    document.getElementById('logoutModal').classList.remove('flex');
+}
+
+function confirmLogoutAction() {
+    // Redirect to logout route or perform logout action
+    window.location.href = '{{ route("login") }}';
+}
+</script>
