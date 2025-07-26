@@ -47,7 +47,7 @@
                             <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">{{ $account->email }}</td>
                             <td class="px-4 py-3 whitespace-nowrap">
                                 <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full 
-                                    {{ $account->role === 'aktif' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-50 text-gray-700 border border-gray-200' }}">
+                                    {{ $account->role === 'aktif' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
                                     {{ ucfirst($account->role) }}
                                 </span>
                             </td>
@@ -58,7 +58,7 @@
                                         <x-heroicon-o-pencil class="h-4 w-4 mr-1" />
                                         Edit
                                     </button>
-                                    <button wire:click="deleteAccount({{ $account->id }})" 
+                                    <button onclick="confirmDeleteAccount({{ $account->id }})" 
                                         class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 rounded-md hover:bg-red-100 transition-colors duration-150 text-xs font-medium">
                                         <x-heroicon-o-trash class="h-4 w-4 mr-1" />
                                         Hapus
@@ -127,9 +127,8 @@
                         <x-input-select wire:model="formData.role" label="Role"
                             placeholder="Pilih role pengguna"
                             :options="[
-                                ['value' => 'admin', 'label' => 'Administrator'],
-                                ['value' => 'petugas_a', 'label' => 'Petugas A'],
-                                ['value' => 'petugas_b', 'label' => 'Petugas B']
+                                ['value' => 'aktif', 'label' => 'Aktif'],
+                                ['value' => 'suspended', 'label' => 'Suspended']
                             ]"
                             class="border-gray-300 rounded-md shadow-sm" required />
 
@@ -151,5 +150,51 @@
             </div>
         </div>
     </div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteAccountModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-md mx-4 shadow-2xl">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                    <x-heroicon-o-exclamation-triangle class="h-6 w-6 text-red-600" />
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Hapus Akun</h3>
+            </div>
+            <p class="text-gray-600 mb-6">Apakah Anda yakin ingin menghapus akun ini? Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="flex space-x-3 justify-end">
+                <button onclick="closeDeleteAccountModal()" type="button"
+                    class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-all duration-200 text-sm font-medium">
+                    Batal
+                </button>
+                <button onclick="confirmDeleteAccountAction()" type="button"
+                    class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-sm font-medium">
+                    Hapus Akun
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let accountToDelete = null;
+
+    function confirmDeleteAccount(accountId) {
+        accountToDelete = accountId;
+        document.getElementById('deleteAccountModal').classList.remove('hidden');
+        document.getElementById('deleteAccountModal').classList.add('flex');
+    }
+
+    function closeDeleteAccountModal() {
+        accountToDelete = null;
+        document.getElementById('deleteAccountModal').classList.add('hidden');
+        document.getElementById('deleteAccountModal').classList.remove('flex');
+    }
+
+    function confirmDeleteAccountAction() {
+        if (accountToDelete) {
+            @this.call('deleteAccount', accountToDelete);
+            closeDeleteAccountModal();
+        }
+    }
+    </script>
 
 </div>
