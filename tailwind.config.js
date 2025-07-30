@@ -9,7 +9,7 @@ export default {
         './resources/**/*.blade.php',
         './resources/**/*.js',
         './resources/**/*.vue',
-        "./app/Livewire/**/*.php",
+        './app/Livewire/**/*.php',
         './resources/views/**/*.blade.php',
     ],
 
