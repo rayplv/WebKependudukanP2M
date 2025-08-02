@@ -48,6 +48,36 @@ class DataWargaIndex extends Component {
 
     // ...existing code...
 
+    public function openTambahModal() {
+        $this->reset('formData');
+        $this->formData = [
+            'nik' => '',
+            'no_kk_id' => '',
+            'nama' => '',
+            'tempat_lahir' => '',
+            'tanggal_lahir' => '',
+            'jenis_kelamin' => '',
+            'golongan_darah' => '',
+            'agama_id' => '',
+            'status_perkawinan' => '',
+            'tanggal_perkawinan' => '',
+            'tanggal_perceraian' => '',
+            'pendidikan_terakhir_id' => '',
+            'pekerjaan_id' => '',
+            'kewarganegaraan' => 'WNI',
+            'hubungan_keluarga_id' => '',
+            'nama_ayah' => '',
+            'nama_ibu' => '',
+            'penyandang_disabilitas' => false
+        ];
+        $this->showTambahModal = true;
+    }
+
+    public function closeTambahModal() {
+        $this->showTambahModal = false;
+        $this->reset('formData');
+    }
+
     public function simpanDataWarga() {
         // ...existing validation code...
 

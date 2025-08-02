@@ -80,7 +80,7 @@
 
     <div class="mb-4 flex justify-between items-center">
         <div class="text-gray-700">
-             @auth
+            @auth
                 Jumlah Data Warga yang Ditemukan: <span class="font-bold">{{ number_format($dataWarga->total()) }}</span>
             @else
                 @if(!empty($search))
