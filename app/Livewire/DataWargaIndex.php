@@ -1,6 +1,7 @@
 <?php
 namespace App\Livewire;
 
+use App\Models\DataPribadi;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -150,30 +151,45 @@ class DataWargaIndex extends Component {
 
     public function render() {
         // For backend:
-        // $query = Resident::query();
+        // $query = DataPribadi::query();
+        
         // if (!empty($this->search)) {
-        //     $query->where('name', 'like', '%' . $this->search . '%')
+        //     $query->where(function($q) {
+        //         $q->where('name', 'like', '%' . $this->search . '%')
         //           ->orWhere('nik', 'like', '%' . $this->search . '%')
         //           ->orWhere('no_kk', 'like', '%' . $this->search . '%');
+        //     });
         // }
+        
         // if (!empty($this->filterRW)) {
         //     $query->where('rw', $this->filterRW);
         // }
+        
         // if (!empty($this->filterRT)) {
         //     $query->where('rt', $this->filterRT);
         // }
+        
         // if (!empty($this->filterPendidikan)) {
-        //     $query->where('education', $this->filterPendidikan);
+        //     $query->where('education_id', $this->filterPendidikan);
         // }
+        
         // if (!empty($this->filterStatusPernikahan)) {
         //     $query->where('marital_status', $this->filterStatusPernikahan);
         // }
+        
         // if (!empty($this->filterTag)) {
-        //     $query->whereJsonContains('tags', $this->filterTag);
+        //     // Untuk tags yang disimpan sebagai JSON atau relasi
+        //     if ($this->filterTag === 'Penyandang Disabilitas') {
+        //         $query->where('penyandang_disabilitas', true);
+        //     }
+        //     // atau jika menggunakan JSON column:
+        //     // $query->whereJsonContains('tags', $this->filterTag);
         // }
+        
         // $dataWarga = $query->paginate(10);
 
         // Dummy data for frontend
+        
         $dataWarga = new \Illuminate\Pagination\LengthAwarePaginator(
             [
                 (object) [
