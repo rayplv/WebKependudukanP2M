@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id', // Assuming you have a role_id to link to the Role model
     ];
 
     /**

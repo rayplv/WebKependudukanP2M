@@ -6,8 +6,14 @@
                 <x-heroicon-o-user class="h-7 w-7 text-[#376CB4]" />
             </div>
             <div>
-                <span class="font-bold text-white text-lg block">Admin</span>
-                <span class="text-[#ADC4DB] text-sm">Super Admin</span>
+                @guest
+                    <span class="font-bold text-white text-lg block">Guest</span>
+                    <span class="text-[#ADC4DB] text-sm">Not Logged In</span>
+                @endguest
+                @auth    
+                    <span class="font-bold text-white text-lg block">{{ Auth::user()->name }}</span>
+                    <span class="text-[#ADC4DB] text-sm">Logged In</span>
+                @endauth
             </div>
         </div>
 
@@ -43,27 +49,50 @@
 
         {{-- Bottom Menu --}}
         <ul class="space-y-2 pt-6 border-t border-white border-opacity-30">
-            <li>
-                <a href="{{ route('manajemen-akun') }}"
-                    class="flex items-center p-3 rounded-xl transition-all duration-300 group relative
-                {{ Str::startsWith($currentRoute, 'manajemen-akun') ? 'bg-white text-[#376CB4] shadow-lg transform scale-105' : 'text-white hover:bg-white hover:bg-opacity-20 hover:transform hover:scale-105' }}">
-                    <x-heroicon-o-cog class="h-5 w-5 mr-4 flex-shrink-0 {{ Str::startsWith($currentRoute, 'manajemen-akun') ? 'text-[#376CB4]' : 'text-[#ADC4DB] group-hover:text-white' }}" />
-                    <span class="font-medium">Kelola Akun</span>
-                    @if(Str::startsWith($currentRoute, 'manajemen-akun'))
-                        <div class="absolute right-2 w-2 h-2 bg-[#376CB4] rounded-full"></div>
-                    @endif
-                </a>
-            </li>
-            <li>
-                <a href="#"
-                    onclick="confirmLogout(event)"
-                    class="flex items-center p-3 rounded-xl transition-all duration-300 group text-white hover:bg-white hover:bg-opacity-20 hover:transform hover:scale-105">
-                    <x-heroicon-o-arrow-right-on-rectangle class="h-5 w-5 mr-4 flex-shrink-0 text-[#ADC4DB] group-hover:text-white" />
-                    <span class="font-medium">Keluar</span>
-                </a>
-            </li>
+            @auth
+                @if(Auth::user()->role_id === 3)
+                    <li>
+                        <a href="{{ route('manajemen-akun') }}"
+                            class="flex items-center p-3 rounded-xl transition-all duration-300 group relative
+                        {{ Str::startsWith($currentRoute, 'manajemen-akun') ? 'bg-white text-[#376CB4] shadow-lg transform scale-105' : 'text-white hover:bg-white hover:bg-opacity-20 hover:transform hover:scale-105' }}">
+                            <x-heroicon-o-cog class="h-5 w-5 mr-4 flex-shrink-0 {{ Str::startsWith($currentRoute, 'manajemen-akun') ? 'text-[#376CB4]' : 'text-[#ADC4DB] group-hover:text-white' }}" />
+                            <span class="font-medium">Kelola Akun</span>
+                            @if(Str::startsWith($currentRoute, 'manajemen-akun'))
+                                <div class="absolute right-2 w-2 h-2 bg-[#376CB4] rounded-full"></div>
+                            @endif
+                        </a>
+                    </li>
+                @endif
+                {{-- Tombol Logout untuk user yang sudah login --}}
+                <li>
+                    <a href="#"
+                        onclick="confirmLogout(event)"
+                        class="flex items-center p-3 rounded-xl transition-all duration-300 group text-white hover:bg-white hover:bg-opacity-20 hover:transform hover:scale-105">
+                        <x-heroicon-o-arrow-right-on-rectangle class="h-5 w-5 mr-4 flex-shrink-0 text-[#ADC4DB] group-hover:text-white" />
+                        <span class="font-medium">Keluar</span>
+                    </a>
+                </li>
+            @endauth
+            
+            @guest
+                {{-- Tombol Login untuk guest --}}
+                <li>
+                    <a href="{{ route('login') }}"
+                        class="flex items-center p-3 rounded-xl transition-all duration-300 group text-white hover:bg-white hover:bg-opacity-20 hover:transform hover:scale-105">
+                        <x-heroicon-o-arrow-left-on-rectangle class="h-5 w-5 mr-4 flex-shrink-0 text-[#ADC4DB] group-hover:text-white" />
+                        <span class="font-medium">Masuk</span>
+                    </a>
+                </li>
+            @endguest
         </ul>
     </div>
+
+    <!-- Form logout tersembunyi -->
+    @auth
+    <form id="logoutForm" method="POST" action="{{ route('logout') }}" style="display: none;">
+        @csrf
+    </form>
+    @endauth
 
     <!-- Logout Confirmation Modal -->
     <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
@@ -103,6 +132,6 @@ function closeLogoutModal() {
 
 function confirmLogoutAction() {
     // Redirect to logout route or perform logout action
-    window.location.href = '{{ route("login") }}';
+    document.getElementById('logoutForm').submit();
 }
 </script>

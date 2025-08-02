@@ -17,18 +17,23 @@ Route::get('/login', function () {
 // Group all routes under a layout (assuming 'app' layout)
 Route::middleware(['web'])->group(function () {
     Route::get('/', Dashboard::class)->name('dashboard');
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
     Route::get('/data-warga', DataWargaIndex::class)->name('data-warga.index');
     Route::get('/data-warga/create', TambahDataWarga::class)->name('data-warga.create');
     Route::get('/data-warga/{id}', DataIndividuDetail::class)->name('data-warga.show');
 
-    Route::get('/manajemen-akun', ManajemenAkun::class)->name('manajemen-akun');
+    
     Route::get('/manajemen-akun/create', TambahAkunBaru::class)->name('manajemen-akun.create');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/manajemen-akun', ManajemenAkun::class)->middleware(['permission:View Management'])->name('manajemen-akun');
+});
+
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->name('dashboard');
 
 Route::get('/test', function () {
     return view('permissionTest');
