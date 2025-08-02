@@ -39,6 +39,11 @@ class DataWargaIndex extends Component {
 
     protected $queryString = ['search', 'filterRW', 'filterRT', 'filterPendidikan', 'filterStatusPernikahan', 'filterTag'];
 
+    public function updatingSearch()
+    {
+        $this->showTambahModal = false;
+    }
+
     public function resetFilter() {
         $this->reset(['search', 'filterRW', 'filterRT', 'filterPendidikan', 'filterStatusPernikahan', 'filterTag']);
         $this->resetPage();

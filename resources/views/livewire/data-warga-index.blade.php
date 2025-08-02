@@ -122,24 +122,16 @@
         </div>
     </x-card>
 
-    <!-- Modal Tambah Data Warga -->
-    <div x-data="{ show: @entangle('showTambahModal') }" x-show="show" x-cloak
-        class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Modal Tambah Data Warga - Gunakan wire:ignore untuk mencegah re-render -->
+    @if($showTambahModal)
+    <div wire:ignore.self class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
-                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" 
+                wire:click="closeTambahModal"></div>
 
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-            <div x-show="show" x-transition:enter="ease-out duration-300"
-                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                x-transition:leave="ease-in duration-200"
-                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
                 
                 <div class="bg-white px-6 pt-6 pb-4 sm:p-6 sm:pb-4">
                     <div class="flex justify-between items-center mb-4">
@@ -294,20 +286,16 @@
                                 <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Pernikahan</h4>
                                 
                                 <!-- Tanggal Perkawinan (kondisional) -->
-                                <div x-data="{ showTanggalKawin: @entangle('formData.status_perkawinan').defer }">
-                                    <div x-show="showTanggalKawin === 'Kawin' || showTanggalKawin === 'Cerai Hidup' || showTanggalKawin === 'Cerai Mati'">
-                                        <x-input-date wire:model="formData.tanggal_perkawinan" label="Tanggal Perkawinan"
-                                            class="border-gray-300 rounded-md shadow-sm" />
-                                    </div>
-                                </div>
+                                @if(in_array($formData['status_perkawinan'], ['Kawin', 'Cerai Hidup', 'Cerai Mati']))
+                                    <x-input-date wire:model="formData.tanggal_perkawinan" label="Tanggal Perkawinan"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+                                @endif
                                 
                                 <!-- Tanggal Perceraian (kondisional) -->
-                                <div x-data="{ showTanggalCerai: @entangle('formData.status_perkawinan').defer }">
-                                    <div x-show="showTanggalCerai === 'Cerai Hidup' || showTanggalCerai === 'Cerai Mati'">
-                                        <x-input-date wire:model="formData.tanggal_perceraian" label="Tanggal Perceraian"
-                                            class="border-gray-300 rounded-md shadow-sm" />
-                                    </div>
-                                </div>
+                                @if(in_array($formData['status_perkawinan'], ['Cerai Hidup', 'Cerai Mati']))
+                                    <x-input-date wire:model="formData.tanggal_perceraian" label="Tanggal Perceraian"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+                                @endif
                             </div>
 
                             <div class="space-y-4">
@@ -342,4 +330,5 @@
             </div>
         </div>
     </div>
+    @endif
 </div>
