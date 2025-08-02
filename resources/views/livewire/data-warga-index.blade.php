@@ -60,18 +60,9 @@
             </div>
         @else
             <!-- Pencarian sederhana untuk user tidak login -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4">
                 <x-input-text wire:model.live.debounce.300ms="search" placeholder="Masukkan NIK untuk mencari..."
                     class="border-gray-300 rounded-md shadow-sm" />
-                
-                <x-button 
-                    wire:click="$set('search', '')"
-                    type="button" 
-                    variant="secondary"
-                    class="bg-blue-100 hover:bg-blue-200 text-blue-700">
-                    <x-heroicon-o-arrow-path class="h-5 w-5 mr-2" />
-                    Reset Pencarian
-                </x-button>
             </div>
             
             @if(empty($search))
@@ -129,10 +120,10 @@
                             </td>
                             @auth
                                 <td class="px-4 py-3 whitespace-nowrap text-sm font-mono text-gray-600">
-                                    {{ substr($data->nik, 0, -6) . '******' }}
+                                    {{ $data->nik }}
                                 </td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm font-mono text-gray-600">
-                                    {{ substr($data->no_kk, 0, -6) . '******' }}
+                                    {{ $data->no_kk_id }}
                                 </td>
                             @else
                                 <td class="px-4 py-3 whitespace-nowrap text-sm font-mono text-gray-600">
