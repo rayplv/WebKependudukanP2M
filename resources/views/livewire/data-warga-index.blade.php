@@ -40,13 +40,19 @@
             <x-input-select wire:model.live="filterTag" :options="$tagOptions" placeholder="Tag"
                 class="border-gray-300 rounded-md shadow-sm" />
 
-            <x-button wire:click="applyFilter" type="button" variant="primary"
+            {{-- <x-button wire:click="applyFilter" type="button" variant="primary"
                 class="bg-[#376CB4] hover:bg-[#457BC5] text-white">
                 <x-heroicon-o-funnel class="h-5 w-5 mr-2" />
                 Terapkan Filter
-            </x-button>
+            </x-button> --}}
             
-            <x-button wire:click="resetFilter" type="button" variant="secondary"
+            <x-button 
+                onclick="
+                    document.querySelectorAll('input, select').forEach(el => el.value = ''); 
+                    window.location.href = '{{ route('data-warga.index') }}';
+                " 
+                type="button" 
+                variant="secondary"
                 class="bg-blue-100 hover:bg-blue-200 text-blue-700">
                 <x-heroicon-o-arrow-path class="h-5 w-5 mr-2" />
                 Reset Filter
@@ -96,7 +102,7 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('data-warga.show', $data->id) }}"
+                                <a href="{{ route('data-warga.show', $data->nik) }}"
                                     class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors duration-150 text-xs font-medium">
                                     <x-heroicon-o-eye class="h-4 w-4 mr-1" />
                                     Detail
