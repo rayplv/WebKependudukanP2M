@@ -162,244 +162,323 @@
                 </tbody>
             </table>
         </div>
-
-        <div class="mt-4">
-            @component('components.pagination', ['data' => $dataWarga]) @endcomponent
-        </div>
     </x-card>
 
+        <div class="mt-4">
+            {{ $dataWarga->links() }}
+        </div>
+
     <!-- Modal Tambah Data Warga - Gunakan wire:ignore untuk mencegah re-render -->
-    @auth
+        @auth
         @if($showTambahModal)
         <div wire:ignore.self class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" 
-                    wire:click="closeTambahModal"></div>
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" wire:click="closeTambahModal"></div>
 
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
                 <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-                    
-                    <div class="bg-white px-6 pt-6 pb-4 sm:p-6 sm:pb-4">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold text-[#4E347E]" id="modal-title">
-                                <x-heroicon-o-user-plus class="h-6 w-6 inline mr-2 text-[#376CB4]" />
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
                                 Tambah Data Warga Baru
                             </h3>
-                            <button wire:click="closeTambahModal" class="text-gray-400 hover:text-gray-600">
+                            <button type="button" wire:click="closeTambahModal"
+                                class="text-gray-400 hover:text-gray-600 transition-colors">
                                 <x-heroicon-o-x-mark class="h-6 w-6" />
                             </button>
                         </div>
 
-                        <form wire:submit.prevent="simpanDataWarga" class="space-y-4">
-                            <!-- Form Grid -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Data Pribadi -->
-                                <div class="space-y-4">
-                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Pribadi</h4>
-                                    
-                                    <x-input-text wire:model="formData.nik" label="NIK" placeholder="Masukkan NIK"
+                        <form wire:submit.prevent="simpanDataWarga" class="space-y-6">
+                            <!-- Data Identitas -->
+                            <div class="space-y-4">
+                                <h4 class="text-md font-semibold text-gray-800 border-b pb-2">Data Identitas</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <x-input-text wire:model="formData.nik" label="NIK" 
+                                        placeholder="Masukkan 16 digit NIK"
                                         class="border-gray-300 rounded-md shadow-sm" required />
+                                        @error('formData.nik')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
+                                    <div class="space-y-0">
+                                        <label class="block text-sm font-medium text-gray-700">No. KK *</label>
+                                        <div class="flex gap-2">
+                                            <x-input-text wire:model="formData.no_kk_id" 
+                                                placeholder="Masukkan 16 digit No. KK"
+                                                class="border-gray-300 rounded-md shadow-sm flex-1" required />
+                                                @error('formData.no_kk_id')
+                                                    <span class="text-red-600 text-xs">{{ $message }}</span>
+                                                @enderror
+                                            <x-button wire:click="checkKKExists" type="button" variant="secondary"
+                                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md whitespace-nowrap"
+                                                :disabled="$checkingKK">
+                                                @if($checkingKK)
+                                                    <x-heroicon-o-arrow-path class="h-4 w-4 animate-spin" />
+                                                @else
+                                                    <x-heroicon-o-magnifying-glass class="h-4 w-4 mr-1" />
+                                                    Cek
+                                                @endif
+                                            </x-button>
+                                        </div>
+                                        
+                                        @if($kkExists === true)
+                                            <div class="flex items-center text-sm text-green-600">
+                                                <x-heroicon-o-check-circle class="h-4 w-4 mr-2" />
+                                                No. KK ditemukan dalam database
+                                            </div>
+                                        @elseif($kkExists === false)
+                                            <div class="flex items-center text-sm text-orange-600">
+                                                <x-heroicon-o-exclamation-triangle class="h-4 w-4 mr-2" />
+                                                No. KK belum terdaftar - silakan isi data KK di bawah
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Data KK Baru (tampil jika KK belum ada) -->
+                            @if($kkExists === false)
+                                <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 space-y-4">
+                                    <h4 class="font-medium text-orange-800 flex items-center">
+                                        <x-heroicon-o-home class="h-5 w-5 mr-2" />
+                                        Data Kartu Keluarga Baru
+                                    </h4>
                                     
-                                    <x-input-text wire:model="formData.no_kk_id" label="No. KK" placeholder="Masukkan No. KK"
+                                    <div class="grid grid-cols-1 gap-4">
+                                        <x-input-text wire:model="kkData.alamat" label="Alamat Lengkap" 
+                                            placeholder="Masukkan alamat lengkap sesuai KK"
+                                            class="border-gray-300 rounded-md shadow-sm" 
+                                            rows="3" required />
+                                            @error('kkData.alamat')
+                                                <span class="text-red-600 text-xs">{{ $message }}</span>
+                                            @enderror
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <x-input-text wire:model="kkData.rt" label="RT" 
+                                                placeholder="Contoh: 01"
+                                                class="border-gray-300 rounded-md shadow-sm" />
+                                            @error('kkData.rt')
+                                                <span class="text-red-600 text-xs">{{ $message }}</span>
+                                            @enderror
+                                            <x-input-text wire:model="kkData.rw" label="RW" 
+                                                placeholder="Contoh: 01"
+                                                class="border-gray-300 rounded-md shadow-sm" />
+                                            @error('kkData.rw')
+                                                <span class="text-red-600 text-xs">{{ $message }}</span>
+                                            @enderror
+                                            <x-input-date wire:model="kkData.tanggal_dikeluarkan" label="Tanggal Dikeluarkan KK" 
+                                                class="border-gray-300 rounded-md shadow-sm" />
+                                            @error('kkData.tanggal_dikeluarkan')
+                                                <span class="text-red-600 text-xs">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Data Pribadi -->
+                            <div class="space-y-4">
+                                <h4 class="text-md font-semibold text-gray-800 border-b pb-2">Data Pribadi</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <x-input-text wire:model="formData.nama" label="Nama Lengkap" 
+                                        placeholder="Masukkan nama lengkap sesuai KTP"
                                         class="border-gray-300 rounded-md shadow-sm" required />
-                                    
-                                    <x-input-text wire:model="formData.nama" label="Nama Lengkap" placeholder="Masukkan nama lengkap"
+                                        @error('formData.nama')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
+                                    <x-input-text wire:model="formData.tempat_lahir" label="Tempat Lahir" 
+                                        placeholder="Masukkan tempat lahir"
                                         class="border-gray-300 rounded-md shadow-sm" required />
-                                    
-                                    <x-input-text wire:model="formData.tempat_lahir" label="Tempat Lahir" placeholder="Masukkan tempat lahir"
-                                        class="border-gray-300 rounded-md shadow-sm" required />
-                                    
+                                        @error('formData.tempat_lahir')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
                                     <x-input-date wire:model="formData.tanggal_lahir" label="Tanggal Lahir"
                                         class="border-gray-300 rounded-md shadow-sm" required />
-                                    
+                                        @error('formData.tanggal_lahir')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
                                     <x-input-select wire:model="formData.jenis_kelamin" label="Jenis Kelamin"
                                         placeholder="Pilih jenis kelamin"
-                                        :options="[['value' => 'LAKI-LAKI', 'label' => 'Laki-laki'], ['value' => 'PEREMPUAN', 'label' => 'Perempuan']]"
-                                        class="border-gray-300 rounded-md shadow-sm" required />
-                                </div>
-
-                            <!-- Data Alamat & Lainnya -->
-                            <div class="space-y-4">
-                                <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Identitas</h4>
-                                
-                                <x-input-select wire:model="formData.golongan_darah" label="Golongan Darah"
-                                    placeholder="Pilih golongan darah"
-                                    :options="[
-                                        ['value' => 'A', 'label' => 'A'],
-                                        ['value' => 'B', 'label' => 'B'],
-                                        ['value' => 'AB', 'label' => 'AB'],
-                                        ['value' => 'O', 'label' => 'O']
-                                    ]"
-                                    class="border-gray-300 rounded-md shadow-sm" required />
-                                
-                                <x-input-select wire:model="formData.agama_id" label="Agama"
-                                    placeholder="Pilih agama"
-                                    :options="[
-                                        ['value' => '1', 'label' => 'Islam'],
-                                        ['value' => '2', 'label' => 'Kristen'],
-                                        ['value' => '3', 'label' => 'Katolik'],
-                                        ['value' => '4', 'label' => 'Hindu'],
-                                        ['value' => '5', 'label' => 'Buddha'],
-                                        ['value' => '6', 'label' => 'Konghucu']
-                                    ]"
-                                    class="border-gray-300 rounded-md shadow-sm" required />
-                                
-                                <x-input-select wire:model="formData.pendidikan_terakhir_id" label="Pendidikan Terakhir"
-                                    placeholder="Pilih pendidikan terakhir"
-                                    :options="[
-                                        ['value' => '1', 'label' => 'Tidak/Belum Sekolah'],
-                                        ['value' => '2', 'label' => 'SD'],
-                                        ['value' => '3', 'label' => 'SMP'],
-                                        ['value' => '4', 'label' => 'SMA'],
-                                        ['value' => '5', 'label' => 'D3'],
-                                        ['value' => '6', 'label' => 'S1'],
-                                        ['value' => '7', 'label' => 'S2'],
-                                        ['value' => '8', 'label' => 'S3']
-                                    ]"
-                                    class="border-gray-300 rounded-md shadow-sm" required />
-                                
-                                <x-input-select wire:model="formData.pekerjaan_id" label="Pekerjaan"
-                                    placeholder="Pilih pekerjaan"
-                                    :options="[
-                                        ['value' => '1', 'label' => 'PNS'],
-                                        ['value' => '2', 'label' => 'Guru'],
-                                        ['value' => '3', 'label' => 'Mahasiswa'],
-                                        ['value' => '4', 'label' => 'Pelajar'],
-                                        ['value' => '5', 'label' => 'Petani'],
-                                        ['value' => '6', 'label' => 'Wirausaha'],
-                                        ['value' => '7', 'label' => 'Tidak Bekerja']
-                                    ]"
-                                    class="border-gray-300 rounded-md shadow-sm" />
-                                
-                                <x-input-select wire:model="formData.kewarganegaraan" label="Kewarganegaraan"
-                                    :options="[
-                                        ['value' => 'WNI', 'label' => 'Warga Negara Indonesia'],
-                                        ['value' => 'WNA', 'label' => 'Warga Negara Asing']
-                                    ]"
-                                    class="border-gray-300 rounded-md shadow-sm" required />
-                            </div>
-                        </div>
-
-                        <!-- Data Dokumen Imigrasi -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                            <div class="space-y-4">
-                                <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Dokumen Imigrasi (Opsional)</h4>
-                                
-                                <x-input-text wire:model="formData.no_paspor" label="No. Paspor" 
-                                    placeholder="Masukkan nomor paspor (jika ada)"
-                                    class="border-gray-300 rounded-md shadow-sm" />
-                                
-                                @if($formData['kewarganegaraan'] ?? '' === 'WNA')
-                                    <x-input-text wire:model="formData.no_kitap" label="No. KITAP" 
-                                        placeholder="Masukkan nomor KITAP"
-                                        class="border-gray-300 rounded-md shadow-sm" />
-                                @endif
-                            </div>
-
-                            <div class="space-y-4">
-                                <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">&nbsp;</h4>
-                                <div class="text-sm text-gray-600 space-y-2">
-                                    <p class="italic">* Dokumen imigrasi bersifat opsional dan hanya perlu diisi jika tersedia</p>
-                                    @if($formData['kewarganegaraan'] ?? '' === 'WNA')
-                                        <p class="text-blue-600 font-medium">📋 KITAP diperlukan untuk Warga Negara Asing</p>
-                                    @elseif($formData['kewarganegaraan'] ?? '' === 'WNI')
-                                        <p class="text-green-600 font-medium">🇮🇩 KITAP tidak diperlukan untuk Warga Negara Indonesia</p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                            <!-- Data KK & Keluarga -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                                <div class="space-y-4">
-                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Kartu Keluarga</h4>
-                                    
-                                    <x-input-select wire:model="formData.hubungan_keluarga_id" label="Hubungan Dalam KK"
-                                        placeholder="Pilih hubungan dalam KK"
                                         :options="[
-                                            ['value' => '1', 'label' => 'Kepala Keluarga'],
-                                            ['value' => '2', 'label' => 'Suami'],
-                                            ['value' => '3', 'label' => 'Istri'],
-                                            ['value' => '4', 'label' => 'Anak'],
-                                            ['value' => '5', 'label' => 'Menantu'],
-                                            ['value' => '6', 'label' => 'Cucu'],
-                                            ['value' => '7', 'label' => 'Orangtua'],
-                                            ['value' => '8', 'label' => 'Mertua'],
-                                            ['value' => '9', 'label' => 'Famili Lain'],
-                                            ['value' => '10', 'label' => 'Pembantu'],
-                                            ['value' => '11', 'label' => 'Lainnya']
+                                            ['value' => 'LAKI-LAKI', 'label' => 'Laki-laki'],
+                                            ['value' => 'PEREMPUAN', 'label' => 'Perempuan']
                                         ]"
                                         class="border-gray-300 rounded-md shadow-sm" required />
-                                </div>
-
-                                <div class="space-y-4">
-                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Orangtua</h4>
-                                    
-                                    <x-input-text wire:model="formData.nama_ayah" label="Nama Ayah" 
-                                        placeholder="Masukkan nama ayah"
+                                        @error('formData.jenis_kelamin')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
+                                    <x-input-select wire:model="formData.golongan_darah" label="Golongan Darah"
+                                        placeholder="Pilih golongan darah"
+                                        :options="[
+                                            ['value' => 'A', 'label' => 'A'],
+                                            ['value' => 'B', 'label' => 'B'],
+                                            ['value' => 'AB', 'label' => 'AB'],
+                                            ['value' => 'O', 'label' => 'O']
+                                        ]"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+                                        @error('formData.golongan_darah')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
+                                    <x-input-select wire:model="formData.agama_id" label="Agama"
+                                        placeholder="Pilih agama"
+                                        :options="$agamaOptions ?? []"
                                         class="border-gray-300 rounded-md shadow-sm" required />
-                                    
-                                    <x-input-text wire:model="formData.nama_ibu" label="Nama Ibu" 
-                                        placeholder="Masukkan nama ibu"
-                                        class="border-gray-300 rounded-md shadow-sm" required />
+                                        @error('formData.agama_id')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
                                 </div>
                             </div>
 
-                        <!-- Data Pernikahan & Status -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                            <!-- Data Pernikahan -->
                             <div class="space-y-4">
-                                <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Pernikahan</h4>
+                                <h4 class="text-md font-semibold text-gray-800 border-b pb-2">Data Pernikahan</h4>
                                 
-                                <x-input-select wire:model.live="formData.status_perkawinan" label="Status Pernikahan"
-                                    placeholder="Pilih status pernikahan"
-                                    :options="[
-                                        ['value' => 'Belum Kawin', 'label' => 'Belum Kawin'],
-                                        ['value' => 'Kawin', 'label' => 'Kawin'],
-                                        ['value' => 'Cerai Hidup', 'label' => 'Cerai Hidup'],
-                                        ['value' => 'Cerai Mati', 'label' => 'Cerai Mati']
-                                    ]"
-                                    class="border-gray-300 rounded-md shadow-sm" required />
-                                
-                                @if($formData['status_perkawinan'] ?? '' === 'Kawin')
-                                    <x-input-date wire:model="formData.tanggal_perkawinan" label="Tanggal Perkawinan"
-                                        class="border-gray-300 rounded-md shadow-sm" />
-                                @elseif(in_array($formData['status_perkawinan'] ?? '', ['Cerai Hidup', 'Cerai Mati']))
-                                    <x-input-date wire:model="formData.tanggal_perceraian" label="Tanggal Cerai"
-                                        class="border-gray-300 rounded-md shadow-sm" />
-                                @endif
-                            </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <x-input-select wire:model.live="formData.status_perkawinan" label="Status Pernikahan"
+                                        placeholder="Pilih status pernikahan"
+                                        :options="[
+                                            ['value' => 'Belum Kawin', 'label' => 'Belum Kawin'],
+                                            ['value' => 'Kawin', 'label' => 'Kawin'],
+                                            ['value' => 'Cerai Hidup', 'label' => 'Cerai Hidup'],
+                                            ['value' => 'Cerai Mati', 'label' => 'Cerai Mati']
+                                        ]"
+                                        class="border-gray-300 rounded-md shadow-sm"
+                                        required />
+                                        @error('formData.status_perkawinan')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
 
-                            <div class="space-y-4">
-                                <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Status Khusus</h4>
-                                
-                                <!-- Penyandang Disabilitas -->
-                                <div class="space-y-2">
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" wire:model.live="formData.penyandang_disabilitas"
-                                            class="form-checkbox h-5 w-5 text-[#376CB4] rounded focus:ring-[#376CB4] border-gray-300">
-                                        <span class="ml-2 text-sm font-medium text-gray-700">Penyandang Disabilitas</span>
-                                    </label>
-                                    
-                                    @if($formData['penyandang_disabilitas'] ?? false)
-                                        <x-input-text wire:model="formData.detail_disabilitas" label="Detail Disabilitas" 
-                                            placeholder="Jelaskan jenis disabilitas"
-                                            class="border-gray-300 rounded-md shadow-sm mt-2" />
+                                    @if(in_array($formData['status_perkawinan'] ?? '', ['Kawin', 'Cerai Hidup', 'Cerai Mati']))
+                                        <x-input-date wire:model="formData.tanggal_perkawinan" label="Tanggal Perkawinan"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+                                        @error('formData.tanggal_perkawinan')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
+                                    @endif
+
+                                    @if(in_array($formData['status_perkawinan'] ?? '', ['Cerai Hidup', 'Cerai Mati']))
+                                        <x-input-date wire:model="formData.tanggal_perceraian" label="Tanggal Perceraian"
+                                            class="border-gray-300 rounded-md shadow-sm" />
                                     @endif
                                 </div>
                             </div>
-                        </div>
 
-                            <!-- Modal Footer -->
-                            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse mt-6 -mx-6 -mb-4">
+                            <!-- Data Dokumen Imigrasi -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                                <div class="space-y-4">
+                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Dokumen Imigrasi (Opsional)</h4>
+                                    
+                                    <x-input-text wire:model="formData.no_paspor" label="No. Paspor" 
+                                        placeholder="Masukkan nomor paspor (jika ada)"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+                                    
+                                    @if($formData['kewarganegaraan'] ?? '' === 'WNA')
+                                        <x-input-text wire:model="formData.no_kitap" label="No. KITAP" 
+                                            placeholder="Masukkan nomor KITAP"
+                                            class="border-gray-300 rounded-md shadow-sm" />
+                                    @endif
+                                </div>
+
+                                <div class="space-y-4">
+                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">&nbsp;</h4>
+                                    <div class="text-sm text-gray-600 space-y-2">
+                                        <p class="italic">* Dokumen imigrasi bersifat opsional dan hanya perlu diisi jika tersedia</p>
+                                        @if($formData['kewarganegaraan'] ?? '' === 'WNA')
+                                            <p class="text-blue-600 font-medium">📋 KITAP diperlukan untuk Warga Negara Asing</p>
+                                        @elseif($formData['kewarganegaraan'] ?? '' === 'WNI')
+                                            <p class="text-green-600 font-medium">🇮🇩 KITAP tidak diperlukan untuk Warga Negara Indonesia</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data Pendidikan dan Pekerjaan -->
+                            <div class="space-y-4">
+                                <h4 class="text-md font-semibold text-gray-800 border-b pb-2">Pendidikan & Pekerjaan</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <x-input-select wire:model="formData.pendidikan_terakhir_id" label="Pendidikan Terakhir"
+                                        placeholder="Pilih pendidikan terakhir"
+                                        :options="$pendidikanOptions ?? []"
+                                        class="border-gray-300 rounded-md shadow-sm" required />
+
+                                    <x-input-select wire:model="formData.pekerjaan_id" label="Pekerjaan"
+                                        placeholder="Pilih pekerjaan"
+                                        :options="$pekerjaanOptions ?? []"
+                                        class="border-gray-300 rounded-md shadow-sm" required />
+                                </div>
+                            </div>
+
+                            <!-- Data Keluarga -->
+                            <div class="space-y-4">
+                                <h4 class="text-md font-semibold text-gray-800 border-b pb-2">Data Keluarga</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <x-input-select wire:model="formData.hubungan_keluarga_id" label="Hubungan dalam Keluarga"
+                                        placeholder="Pilih hubungan keluarga"
+                                        :options="$hubunganKeluargaOptions ?? []"
+                                        class="border-gray-300 rounded-md shadow-sm" required />
+
+                                    <x-input-select wire:model="formData.kewarganegaraan" label="Kewarganegaraan"
+                                        placeholder="Pilih kewarganegaraan"
+                                        :options="[
+                                            ['value' => 'WNI', 'label' => 'WNI'],
+                                            ['value' => 'WNA', 'label' => 'WNA']
+                                        ]"
+                                        class="border-gray-300 rounded-md shadow-sm" required />
+
+                                    <x-input-text wire:model="formData.nama_ayah" label="Nama Ayah" 
+                                        placeholder="Masukkan nama ayah"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+
+                                    <x-input-text wire:model="formData.nama_ibu" label="Nama Ibu" 
+                                        placeholder="Masukkan nama ibu"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+                                </div>
+                            </div>
+
+                            <!-- Data Tambahan -->
+                            <div class="space-y-4">
+                                <h4 class="text-md font-semibold text-gray-800 border-b pb-2">Data Tambahan</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <!-- Penyandang Disabilitas -->
+                                    <div class="space-y-2">
+                                        <label class="inline-flex items-center">
+                                            <input type="checkbox" wire:model.live="formData.penyandang_disabilitas_check"
+                                                class="form-checkbox h-5 w-5 text-[#376CB4] rounded focus:ring-[#376CB4] border-gray-300">
+                                            <span class="ml-2 text-sm font-medium text-gray-700">Penyandang Disabilitas</span>
+                                        </label>
+                                        
+                                        @if($formData['penyandang_disabilitas_check'] ?? false)
+                                            <x-input-text wire:model="formData.penyandang_disabilitas" label="Detail Disabilitas" 
+                                                placeholder="Jelaskan jenis disabilitas"
+                                                class="border-gray-300 rounded-md shadow-sm mt-2" />
+                                        @endif
+                                    </div>
+
+                                    @if(($formData['kewarganegaraan'] ?? '') === 'WNA')
+                                        <x-input-text wire:model="formData.no_paspor" label="No. Paspor" 
+                                            placeholder="Masukkan nomor paspor"
+                                            class="border-gray-300 rounded-md shadow-sm" />
+
+                                        <x-input-text wire:model="formData.no_kitap" label="No. KITAP" 
+                                            placeholder="Masukkan nomor KITAP"
+                                            class="border-gray-300 rounded-md shadow-sm" />
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Footer Modal -->
+                            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t">
                                 <x-button type="submit" variant="primary"
-                                    class="w-full sm:w-auto sm:ml-3 bg-[#376CB4] hover:bg-[#457BC5] text-white">
-                                    <x-heroicon-o-check class="h-5 w-5 mr-2" />
-                                    Simpan Data
+                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#376CB4] text-base font-medium text-white hover:bg-[#457BC5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#376CB4] sm:ml-3 sm:w-auto sm:text-sm">
+                                    Simpan Data Warga
                                 </x-button>
                                 <x-button wire:click="closeTambahModal" type="button" variant="secondary"
-                                    class="mt-3 sm:mt-0 w-full sm:w-auto bg-gray-200 hover:bg-gray-300 text-gray-700">
-                                    <x-heroicon-o-x-mark class="h-5 w-5 mr-2" />
+                                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#376CB4] sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                                     Batal
                                 </x-button>
                             </div>
@@ -410,4 +489,3 @@
         </div>
         @endif
     @endauth
-</div>
