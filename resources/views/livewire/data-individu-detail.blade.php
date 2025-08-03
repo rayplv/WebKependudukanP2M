@@ -91,6 +91,11 @@
                                 <span class="font-medium text-gray-600 text-sm w-40">Tanggal Perkawinan:</span>
                                 <div class="text-gray-900 text-sm">{{ \Carbon\Carbon::parse($resident->tanggal_perkawinan)->format('d F Y') }}</div>
                             </div>
+                            @elseif(in_array($resident->status_perkawinan, ['Cerai Hidup', 'Cerai Mati']) && isset($resident->tanggal_perceraian))
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Tanggal Cerai:</span>
+                                <div class="text-gray-900 text-sm">{{ \Carbon\Carbon::parse($resident->tanggal_perceraian)->format('d F Y') }}</div>
+                            </div>
                             @endif
                             <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
                                 <span class="font-medium text-gray-600 text-sm w-40">Pekerjaan:</span>
@@ -185,47 +190,59 @@
                             </div>
                         @endif
                     </div>
+                </div>
+            </div>
 
-                    <!-- Informasi Tambahan -->
-                    <div class="mt-8">
-                        <h4 class="text-lg font-semibold text-gray-700 mb-4 bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded border border-gray-200">Dokumen & Status Khusus</h4>
-                        <div class="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-                            <div class="divide-y divide-gray-200">
-                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                    <span class="font-medium text-gray-600 text-sm w-40">RT:</span>
-                                    <div class="text-gray-900 text-sm">02</div>
-                                </div>
-                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                    <span class="font-medium text-gray-600 text-sm w-40">RW:</span>
-                                    <div class="text-gray-900 text-sm">01</div>
-                                </div>
-                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                    <span class="font-medium text-gray-600 text-sm w-40">Alamat Lengkap:</span>
-                                    <div class="text-gray-900 text-sm">Jl. Mawar Indah No. 10, RT 02 / RW 01, Kel. Mekar Jaya, Kec. Sukamaju, Kab. Bogor</div>
-                                </div>
-                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                    <span class="font-medium text-gray-600 text-sm w-40">Penyandang Disabilitas:</span>
-                                    <div class="text-gray-900 text-sm">{{ $resident->penyandang_disabilitas ? 'Ya' : 'Tidak' }}</div>
-                                </div>
-                                @if(isset($resident->no_paspor) && !empty($resident->no_paspor))
-                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                    <span class="font-medium text-gray-600 text-sm w-40">No. Paspor:</span>
-                                    <div class="text-gray-900 font-mono text-sm">{{ $resident->no_paspor }}</div>
-                                </div>
-                                @endif
-                                @if($resident->kewarganegaraan === 'WNA' && isset($resident->no_kitap) && !empty($resident->no_kitap))
-                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                    <span class="font-medium text-gray-600 text-sm w-40">No. KITAP:</span>
-                                    <div class="text-gray-900 font-mono text-sm">{{ $resident->no_kitap }}</div>
-                                </div>
-                                @endif
-                                @if($resident->penyandang_disabilitas && isset($resident->detail_disabilitas) && !empty($resident->detail_disabilitas))
-                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                    <span class="font-medium text-gray-600 text-sm w-40">Detail Disabilitas:</span>
-                                    <div class="text-gray-900 text-sm">{{ $resident->detail_disabilitas }}</div>
-                                </div>
-                                @endif
+            <!-- Informasi Tambahan -->
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mt-8">
+                <!-- Dokumen & Alamat -->
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4 bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded border border-gray-200">Dokumen & Alamat</h4>
+                    <div class="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                        <div class="divide-y divide-gray-200">
+                            @if(isset($resident->no_paspor) && !empty($resident->no_paspor))
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">No. Paspor:</span>
+                                <div class="text-gray-900 font-mono text-sm">{{ $resident->no_paspor }}</div>
                             </div>
+                            @endif
+                            @if($resident->kewarganegaraan === 'WNA' && isset($resident->no_kitap) && !empty($resident->no_kitap))
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">No. KITAP:</span>
+                                <div class="text-gray-900 font-mono text-sm">{{ $resident->no_kitap }}</div>
+                            </div>
+                            @endif
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">RT:</span>
+                                <div class="text-gray-900 text-sm">02</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">RW:</span>
+                                <div class="text-gray-900 text-sm">01</div>
+                            </div>
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Alamat Lengkap:</span>
+                                <div class="text-gray-900 text-sm">Jl. Mawar Indah No. 10, RT 02 / RW 01, Kel. Mekar Jaya, Kec. Sukamaju, Kab. Bogor</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Khusus -->
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4 bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded border border-gray-200">Status Khusus</h4>
+                    <div class="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                        <div class="divide-y divide-gray-200">
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Penyandang Disabilitas:</span>
+                                <div class="text-gray-900 text-sm">{{ $resident->penyandang_disabilitas ? 'Ya' : 'Tidak' }}</div>
+                            </div>
+                            @if($resident->penyandang_disabilitas && isset($resident->detail_disabilitas) && !empty($resident->detail_disabilitas))
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Detail Disabilitas:</span>
+                                <div class="text-gray-900 text-sm">{{ $resident->detail_disabilitas }}</div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -71,7 +71,10 @@ class DataWargaIndex extends Component {
             'hubungan_keluarga_id' => '',
             'nama_ayah' => '',
             'nama_ibu' => '',
-            'penyandang_disabilitas' => false
+            'penyandang_disabilitas' => false,
+            'detail_disabilitas' => '',
+            'no_paspor' => '',
+            'no_kitap' => ''
         ];
         $this->showTambahModal = true;
     }
@@ -137,7 +140,7 @@ class DataWargaIndex extends Component {
         // $this->validate();
         // try {
             
-            // Simpan ke database
+            // Simpan ke database (sementara untuk testing, data tidak benar-benar disimpan)
             $noKK = $this->formData['no_kk_id'];
             if($this->formData['tanggal_perkawinan'] === ''){
                 $this->formData['tanggal_perkawinan'] = null;
@@ -145,18 +148,20 @@ class DataWargaIndex extends Component {
             if($this->formData['tanggal_perceraian'] === ''){
                 $this->formData['tanggal_perceraian'] = null;
             }
-            $kk = DataKeluarga::find($noKK);
-            if (!$kk) {
-                $kk = DataKeluarga::create([
-                        'no_kk' => $noKK,
-                        'alamat' => '',
-                ]);
-            }
-            $this->formData['no_kk_id'] = $kk->no_kk;
-            DataPribadi::create($this->formData);
+            
+            // Sementara hanya flash message untuk testing
+            session()->flash('message', 'Data warga berhasil disimpan! (Mode Testing - Data tidak benar-benar disimpan ke database)');
+            session()->flash('type', 'success');
 
-            // session()->flash('message', 'Data warga berhasil disimpan!');
-            // session()->flash('type', 'success');
+            // $kk = DataKeluarga::find($noKK);
+            // if (!$kk) {
+            //     $kk = DataKeluarga::create([
+            //             'no_kk' => $noKK,
+            //             'alamat' => '',
+            //     ]);
+            // }
+            // $this->formData['no_kk_id'] = $kk->no_kk;
+            // DataPribadi::create($this->formData);
 
             $this->closeTambahModal();
             $this->resetPage();
