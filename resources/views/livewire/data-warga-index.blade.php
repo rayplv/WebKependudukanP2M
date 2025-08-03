@@ -164,7 +164,7 @@
         </div>
 
         <div class="mt-4">
-            {{ $dataWarga->links('components.pagination') }}
+            @component('components.pagination', ['data' => $dataWarga]) @endcomponent
         </div>
     </x-card>
 
