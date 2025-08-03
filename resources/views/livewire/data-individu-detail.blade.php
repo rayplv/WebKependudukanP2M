@@ -86,21 +86,31 @@
                                 <span class="font-medium text-gray-600 text-sm w-40">Status Pernikahan:</span>
                                 <div class="text-gray-900 text-sm">{{ $resident->status_perkawinan }}</div>
                             </div>
+                            @if($resident->status_perkawinan === 'Kawin' && isset($resident->tanggal_perkawinan))
                             <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                <span class="font-medium text-gray-600 text-sm w-40">RT:</span>
-                                <div class="text-gray-900 text-sm">02</div>
+                                <span class="font-medium text-gray-600 text-sm w-40">Tanggal Perkawinan:</span>
+                                <div class="text-gray-900 text-sm">{{ \Carbon\Carbon::parse($resident->tanggal_perkawinan)->format('d F Y') }}</div>
+                            </div>
+                            @endif
+                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                <span class="font-medium text-gray-600 text-sm w-40">Pekerjaan:</span>
+                                <div class="text-gray-900 text-sm">{{ $resident->pekerjaan->nama ?? 'ID: ' . $resident->pekerjaan_id }}</div>
                             </div>
                             <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                <span class="font-medium text-gray-600 text-sm w-40">RW:</span>
-                                <div class="text-gray-900 text-sm">01</div>
-                            </div>
-                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                <span class="font-medium text-gray-600 text-sm w-40">Alamat Lengkap:</span>
-                                <div class="text-gray-900 text-sm">Jl. Mawar Indah No. 10, RT 02 / RW 01, Kel. Mekar Jaya, Kec. Sukamaju, Kab. Bogor</div>
-                            </div>
-                            <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
-                                <span class="font-medium text-gray-600 text-sm w-40">Penyandang Disabilitas:</span>
-                                <div class="text-gray-900 text-sm">{{ $resident->penyandang_disabilitas ? 'Ya' : 'Tidak' }}</div>
+                                <span class="font-medium text-gray-600 text-sm w-40">Kewarganegaraan:</span>
+                                <div class="text-gray-900 text-sm">
+                                    @if($resident->kewarganegaraan === 'WNI')
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-green-50 text-green-700 border border-green-200">
+                                            🇮🇩 Warga Negara Indonesia
+                                        </span>
+                                    @elseif($resident->kewarganegaraan === 'WNA')
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                                            🌍 Warga Negara Asing
+                                        </span>
+                                    @else
+                                        {{ $resident->kewarganegaraan }}
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -110,42 +120,114 @@
                 <div>
                     <h4 class="text-lg font-semibold text-gray-700 mb-4 bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded border border-gray-200">Keluarga dalam Kartu Keluarga</h4>
                     
-                    <div class="bg-white rounded-lg border border-gray-300 overflow-hidden shadow-sm">
-                        <table class="min-w-full">
-                            <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
-                                <tr>
-                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">Hubungan</th>
-                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">Nama</th>
-                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">NIK</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr class="hover:bg-gray-50 transition-colors duration-150">
-                                    <td class="px-3 py-3 text-xs text-gray-900 font-medium">Kepala Keluarga</td>
-                                    <td class="px-3 py-3 text-xs text-gray-900 font-medium">{{ $resident->nama }}</td>
-                                    <td class="px-3 py-3 text-xs font-mono text-gray-600">{{ substr($resident->nik, 0, -6) . '******' }}</td>
-                                </tr>
-                                @if(isset($resident->keluarga_dalam_kk) && !empty($resident->keluarga_dalam_kk))
-                                    @foreach($resident->keluarga_dalam_kk as $keluarga)
-                                        @if($keluarga->nik !== $resident->nik)
-                                        <tr class="hover:bg-gray-50 transition-colors duration-150">
-                                            <td class="px-3 py-3 text-xs text-gray-900">{{ $keluarga->hubungan }}</td>
-                                            <td class="px-3 py-3 text-xs text-gray-900">{{ $keluarga->nama_anggota }}</td>
-                                            <td class="px-3 py-3 text-xs font-mono text-gray-600">{{ substr($keluarga->nik, 0, -6) . '******' }}</td>
-                                        </tr>
-                                        @endif
-                                    @endforeach
-                                @endif
-                            </tbody>
-                        </table>
+                    <!-- Informasi Orang Tua -->
+                    <div class="mb-6">
+                        <h5 class="text-sm font-semibold text-gray-600 mb-3 px-1">Informasi Orang Tua</h5>
+                        <div class="bg-white rounded-lg border border-gray-300 overflow-hidden shadow-sm">
+                            <table class="min-w-full">
+                                <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                                    <tr>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">Hubungan</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">Nama</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                        <td class="px-3 py-3 text-xs text-gray-900 font-medium">Ayah</td>
+                                        <td class="px-3 py-3 text-xs text-gray-900">{{ $resident->nama_ayah ?? '-' }}</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                        <td class="px-3 py-3 text-xs text-gray-900 font-medium">Ibu</td>
+                                        <td class="px-3 py-3 text-xs text-gray-900">{{ $resident->nama_ibu ?? '-' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    @if(isset($resident->keluarga_dalam_kk) && empty($resident->keluarga_dalam_kk))
-                        <div class="text-center py-6">
-                            <x-heroicon-o-user-group class="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                            <span class="text-sm text-gray-500">Data keluarga tidak tersedia</span>
+                    <!-- Anggota Keluarga dalam KK -->
+                    <div>
+                        <h5 class="text-sm font-semibold text-gray-600 mb-3 px-1">Anggota Keluarga dalam KK</h5>
+                        <div class="bg-white rounded-lg border border-gray-300 overflow-hidden shadow-sm">
+                            <table class="min-w-full">
+                                <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                                    <tr>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">Hubungan</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">Nama</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">NIK</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                        <td class="px-3 py-3 text-xs text-gray-900 font-medium">Kepala Keluarga</td>
+                                        <td class="px-3 py-3 text-xs text-gray-900 font-medium">{{ $resident->nama }}</td>
+                                        <td class="px-3 py-3 text-xs font-mono text-gray-600">{{ substr($resident->nik, 0, -6) . '******' }}</td>
+                                    </tr>
+                                    @if(isset($resident->keluarga_dalam_kk) && !empty($resident->keluarga_dalam_kk))
+                                        @foreach($resident->keluarga_dalam_kk as $keluarga)
+                                            @if($keluarga->nik !== $resident->nik)
+                                            <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                                <td class="px-3 py-3 text-xs text-gray-900">{{ $keluarga->hubungan }}</td>
+                                                <td class="px-3 py-3 text-xs text-gray-900">{{ $keluarga->nama_anggota }}</td>
+                                                <td class="px-3 py-3 text-xs font-mono text-gray-600">{{ substr($keluarga->nik, 0, -6) . '******' }}</td>
+                                            </tr>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
                         </div>
-                    @endif
+
+                        @if(isset($resident->keluarga_dalam_kk) && empty($resident->keluarga_dalam_kk))
+                            <div class="text-center py-6">
+                                <x-heroicon-o-user-group class="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                                <span class="text-sm text-gray-500">Data keluarga tidak tersedia</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Informasi Tambahan -->
+                    <div class="mt-8">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-4 bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded border border-gray-200">Dokumen & Status Khusus</h4>
+                        <div class="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                            <div class="divide-y divide-gray-200">
+                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                    <span class="font-medium text-gray-600 text-sm w-40">RT:</span>
+                                    <div class="text-gray-900 text-sm">02</div>
+                                </div>
+                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                    <span class="font-medium text-gray-600 text-sm w-40">RW:</span>
+                                    <div class="text-gray-900 text-sm">01</div>
+                                </div>
+                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                    <span class="font-medium text-gray-600 text-sm w-40">Alamat Lengkap:</span>
+                                    <div class="text-gray-900 text-sm">Jl. Mawar Indah No. 10, RT 02 / RW 01, Kel. Mekar Jaya, Kec. Sukamaju, Kab. Bogor</div>
+                                </div>
+                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                    <span class="font-medium text-gray-600 text-sm w-40">Penyandang Disabilitas:</span>
+                                    <div class="text-gray-900 text-sm">{{ $resident->penyandang_disabilitas ? 'Ya' : 'Tidak' }}</div>
+                                </div>
+                                @if(isset($resident->no_paspor) && !empty($resident->no_paspor))
+                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                    <span class="font-medium text-gray-600 text-sm w-40">No. Paspor:</span>
+                                    <div class="text-gray-900 font-mono text-sm">{{ $resident->no_paspor }}</div>
+                                </div>
+                                @endif
+                                @if($resident->kewarganegaraan === 'WNA' && isset($resident->no_kitap) && !empty($resident->no_kitap))
+                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                    <span class="font-medium text-gray-600 text-sm w-40">No. KITAP:</span>
+                                    <div class="text-gray-900 font-mono text-sm">{{ $resident->no_kitap }}</div>
+                                </div>
+                                @endif
+                                @if($resident->penyandang_disabilitas && isset($resident->detail_disabilitas) && !empty($resident->detail_disabilitas))
+                                <div class="p-4 hover:bg-gray-50 transition-colors duration-150 flex">
+                                    <span class="font-medium text-gray-600 text-sm w-40">Detail Disabilitas:</span>
+                                    <div class="text-gray-900 text-sm">{{ $resident->detail_disabilitas }}</div>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

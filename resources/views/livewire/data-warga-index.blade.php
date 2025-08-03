@@ -288,6 +288,17 @@
                                             ['value' => 'WNA', 'label' => 'Warga Negara Asing']
                                         ]"
                                         class="border-gray-300 rounded-md shadow-sm" required />
+
+                                    <!-- Dokumen Imigrasi (kondisional untuk WNA) -->
+                                    @if(($formData['kewarganegaraan'] ?? '') === 'WNA')
+                                        <x-input-text wire:model="formData.no_paspor" label="No. Paspor" 
+                                            placeholder="Masukkan nomor paspor"
+                                            class="border-gray-300 rounded-md shadow-sm" />
+                                        
+                                        <x-input-text wire:model="formData.no_kitap" label="No. KITAP" 
+                                            placeholder="Masukkan nomor KITAP"
+                                            class="border-gray-300 rounded-md shadow-sm" />
+                                    @endif
                                 </div>
                             </div>
 
@@ -333,7 +344,7 @@
                                     <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Pernikahan</h4>
                                     
                                     <!-- Tanggal Perkawinan (kondisional) -->
-                                    @if(in_array($formData['status_perkawinan'], ['Kawin', 'Cerai Hidup', 'Cerai Mati']))
+                                    @if(($formData['status_perkawinan'] ?? '') === 'Kawin')
                                         <x-input-date wire:model="formData.tanggal_perkawinan" label="Tanggal Perkawinan"
                                             class="border-gray-300 rounded-md shadow-sm" />
                                     @endif
@@ -356,6 +367,13 @@
                                             <span class="ml-2 text-sm font-medium text-gray-700">Penyandang Disabilitas</span>
                                         </label>
                                     </div>
+
+                                    <!-- Detail Disabilitas (kondisional) -->
+                                    @if($formData['penyandang_disabilitas'] ?? false)
+                                        <x-input-text wire:model="formData.detail_disabilitas" label="Detail Disabilitas" 
+                                            placeholder="Masukkan detail disabilitas"
+                                            class="border-gray-300 rounded-md shadow-sm" />
+                                    @endif
                                 </div>
                             </div>
 
