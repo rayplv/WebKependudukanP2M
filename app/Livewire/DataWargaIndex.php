@@ -78,17 +78,76 @@ class DataWargaIndex extends Component {
         $this->reset('formData');
     }
 
+    protected function rules() {
+        return [
+            'formData.nik' => 'required|string|size:16|unique:data_pribadi,nik',
+            'formData.no_kk_id' => 'required|string|size:16',
+            'formData.nama' => 'required|string|min:2|max:100',
+            'formData.tempat_lahir' => 'required|string|min:2|max:50',
+            'formData.tanggal_lahir' => 'required|date|before:today',
+            'formData.jenis_kelamin' => 'required|in:LAKI-LAKI,PEREMPUAN',
+            'formData.golongan_darah' => 'required|in:A,B,AB,O',
+            'formData.agama_id' => 'required|exists:agama,id',
+            'formData.status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Hidup,Cerai Mati',
+            'formData.tanggal_perkawinan' => 'nullable|date|before_or_equal:today|required_if:formData.status_perkawinan,Kawin,Cerai Hidup,Cerai Mati',
+            'formData.tanggal_perceraian' => 'nullable|date|before_or_equal:today|after:formData.tanggal_perkawinan|required_if:formData.status_perkawinan,Cerai Hidup,Cerai Mati',
+            'formData.pendidikan_terakhir_id' => 'required|exists:pendidikan_terakhir,id',
+            'formData.pekerjaan_id' => 'nullable|exists:pekerjaan,id',
+            'formData.kewarganegaraan' => 'required|in:WNI,WNA',
+            'formData.hubungan_keluarga_id' => 'required|exists:hubungan_keluarga,id',
+            'formData.nama_ayah' => 'required|string|min:2|max:100',
+            'formData.nama_ibu' => 'required|string|min:2|max:100',
+            'formData.penyandang_disabilitas' => 'boolean'
+        ];
+    }
+
+    protected function messages() {
+        return [
+            'formData.nik.required' => 'NIK wajib diisi.',
+            'formData.nik.size' => 'NIK harus 16 digit.',
+            'formData.nik.unique' => 'NIK sudah terdaftar dalam sistem.',
+            'formData.no_kk_id.required' => 'No. KK wajib diisi.',
+            'formData.no_kk_id.size' => 'No. KK harus 16 digit.',
+            'formData.nama.required' => 'Nama lengkap wajib diisi.',
+            'formData.nama.min' => 'Nama minimal 2 karakter.',
+            'formData.nama.max' => 'Nama maksimal 100 karakter.',
+            'formData.tempat_lahir.required' => 'Tempat lahir wajib diisi.',
+            'formData.tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
+            'formData.tanggal_lahir.before' => 'Tanggal lahir harus sebelum hari ini.',
+            'formData.jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
+            'formData.golongan_darah.required' => 'Golongan darah wajib dipilih.',
+            'formData.agama_id.required' => 'Agama wajib dipilih.',
+            'formData.agama_id.exists' => 'Agama yang dipilih tidak valid.',
+            'formData.status_perkawinan.required' => 'Status pernikahan wajib dipilih.',
+            'formData.tanggal_perkawinan.required_if' => 'Tanggal perkawinan wajib diisi untuk status yang dipilih.',
+            'formData.tanggal_perceraian.required_if' => 'Tanggal perceraian wajib diisi untuk status yang dipilih.',
+            'formData.tanggal_perceraian.after' => 'Tanggal perceraian harus setelah tanggal perkawinan.',
+            'formData.pendidikan_terakhir_id.required' => 'Pendidikan terakhir wajib dipilih.',
+            'formData.hubungan_keluarga_id.required' => 'Hubungan dalam KK wajib dipilih.',
+            'formData.nama_ayah.required' => 'Nama ayah wajib diisi.',
+            'formData.nama_ibu.required' => 'Nama ibu wajib diisi.'
+        ];
+    }
+
     public function simpanDataWarga() {
-        // ...existing validation code...
+        // Validasi data
+        // $this->validate();
+        // try {
+            
+            // Simpan ke database
+            dd($this->formData);
+            DataPribadi::create($this->formData);
 
-        // Simpan ke database
-        DataPribadi::create($this->formData);
+            // session()->flash('message', 'Data warga berhasil disimpan!');
+            // session()->flash('type', 'success');
 
-        session()->flash('message', 'Data warga berhasil disimpan!');
-        session()->flash('type', 'success');
+            $this->closeTambahModal();
+            $this->resetPage();
 
-        $this->closeTambahModal();
-        $this->resetPage();
+        // } catch (\Exception $e) {
+        //     session()->flash('message', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
+        //     session()->flash('type', 'error');
+        // }
     }
 
     public function render() {
