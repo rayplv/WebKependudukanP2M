@@ -32,7 +32,9 @@ return new class extends Migration
             $table->unsignedInteger('pekerjaan_id')->nullable();
             $table->foreign('pekerjaan_id')->references('id')->on('pekerjaan')->onDelete('set null');
             $table->enum('kewarganegaraan', ['WNI', 'WNA'])->default('WNI');
-            $table->boolean('penyandang_disabilitas')->default(false);
+            $table->string('no_paspor', 50)->nullable();
+            $table->string('no_kitap', 50)->nullable();
+            $table->string('penyandang_disabilitas',100)->nullable();
             $table->string('nama_ayah', 100)->nullable();
             $table->string('nama_ibu', 100)->nullable();
             $table->timestamps();

@@ -27,6 +27,8 @@ class DataPribadi extends Model
         'pendidikan_terakhir_id',
         'pekerjaan_id',
         'kewarganegaraan',
+        'no_paspor',
+        'no_kitap',
         'penyandang_disabilitas',
         'nama_ayah',
         'nama_ibu'
@@ -36,7 +38,6 @@ class DataPribadi extends Model
         'tanggal_lahir' => 'date',
         'tanggal_perkawinan' => 'date',
         'tanggal_perceraian' => 'date',
-        'penyandang_disabilitas' => 'boolean'
     ];
 
     // Relasi ke data keluarga

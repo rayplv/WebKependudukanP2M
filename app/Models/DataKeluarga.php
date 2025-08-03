@@ -16,8 +16,6 @@ class DataKeluarga extends Model
         'alamat',
         'rt',
         'rw',
-        'desa',
-        'kecamatan',
         'tanggal_dikeluarkan'
     ];
 

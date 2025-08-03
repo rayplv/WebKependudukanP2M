@@ -16,8 +16,6 @@ return new class extends Migration
             $table->text('alamat');
             $table->string('rt', 10)->nullable();
             $table->string('rw', 10)->nullable();
-            $table->string('desa', 50)->nullable();
-            $table->string('kecamatan', 50)->nullable();
             $table->date('tanggal_dikeluarkan')->nullable();
             $table->timestamps();
         });
