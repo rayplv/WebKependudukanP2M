@@ -163,6 +163,36 @@
             </table>
         </div>
 
+        <div class="mt-4 flex justify-center space-x-2">
+            {{-- Tombol Sebelumnya --}}
+            @if ($dataWarga->onFirstPage())
+                <button disabled class="px-4 py-2 bg-gray-200 text-gray-500 rounded">Sebelumnya</button>
+            @else
+                <button onclick="window.location.href='{{ $dataWarga->previousPageUrl() }}'" class="px-4 py-2 bg-[#376CB4] text-white rounded hover:bg-[#457BC5]">Sebelumnya</button>
+            @endif
+
+            {{-- Tombol Nomor Halaman --}}
+            @php
+                $start = max($dataWarga->currentPage() - 2, 1);
+                $end = min($start + 3, $dataWarga->lastPage());
+                $start = max($end - 3, 1);
+            @endphp
+            @for ($i = $start; $i <= $end; $i++)
+                @if ($i == $dataWarga->currentPage())
+                    <button class="px-4 py-2 bg-[#376CB4] text-white rounded font-bold">{{ $i }}</button>
+                @else
+                    <button onclick="window.location.href='{{ $dataWarga->url($i) }}'" class="px-4 py-2 bg-white text-[#376CB4] border border-[#376CB4] rounded hover:bg-[#457BC5] hover:text-white">{{ $i }}</button>
+                @endif
+            @endfor
+
+            {{-- Tombol Selanjutnya --}}
+            @if ($dataWarga->hasMorePages())
+                <button onclick="window.location.href='{{ $dataWarga->nextPageUrl() }}'" class="px-4 py-2 bg-[#376CB4] text-white rounded hover:bg-[#457BC5]">Selanjutnya</button>
+            @else
+                <button disabled class="px-4 py-2 bg-gray-200 text-gray-500 rounded">Selanjutnya</button>
+            @endif
+        </div>
+
         <div class="mt-4">
             {{ $dataWarga->links('components.pagination') }}
         </div>
