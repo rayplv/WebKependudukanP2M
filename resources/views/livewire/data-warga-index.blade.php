@@ -219,88 +219,96 @@
                                         class="border-gray-300 rounded-md shadow-sm" required />
                                 </div>
 
-                                <!-- Data Alamat & Lainnya -->
-                                <div class="space-y-4">
-                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Identitas</h4>
-                                    
-                                    <x-input-select wire:model="formData.golongan_darah" label="Golongan Darah"
-                                        placeholder="Pilih golongan darah"
-                                        :options="[
-                                            ['value' => 'A', 'label' => 'A'],
-                                            ['value' => 'B', 'label' => 'B'],
-                                            ['value' => 'AB', 'label' => 'AB'],
-                                            ['value' => 'O', 'label' => 'O']
-                                        ]"
-                                        class="border-gray-300 rounded-md shadow-sm" required />
-                                    
-                                    <x-input-select wire:model="formData.agama_id" label="Agama"
-                                        placeholder="Pilih agama"
-                                        :options="[
-                                            ['value' => '1', 'label' => 'Islam'],
-                                            ['value' => '2', 'label' => 'Kristen'],
-                                            ['value' => '3', 'label' => 'Katolik'],
-                                            ['value' => '4', 'label' => 'Hindu'],
-                                            ['value' => '5', 'label' => 'Buddha'],
-                                            ['value' => '6', 'label' => 'Konghucu']
-                                        ]"
-                                        class="border-gray-300 rounded-md shadow-sm" required />
-                                    
-                                    <x-input-select wire:model="formData.status_perkawinan" label="Status Pernikahan"
-                                        placeholder="Pilih status pernikahan"
-                                        :options="[
-                                            ['value' => 'Belum Kawin', 'label' => 'Belum Kawin'],
-                                            ['value' => 'Kawin', 'label' => 'Kawin'],
-                                            ['value' => 'Cerai Hidup', 'label' => 'Cerai Hidup'],
-                                            ['value' => 'Cerai Mati', 'label' => 'Cerai Mati']
-                                        ]"
-                                        class="border-gray-300 rounded-md shadow-sm" required />
-                                    
-                                    <x-input-select wire:model="formData.pendidikan_terakhir_id" label="Pendidikan Terakhir"
-                                        placeholder="Pilih pendidikan terakhir"
-                                        :options="[
-                                            ['value' => '1', 'label' => 'Tidak/Belum Sekolah'],
-                                            ['value' => '2', 'label' => 'SD'],
-                                            ['value' => '3', 'label' => 'SMP'],
-                                            ['value' => '4', 'label' => 'SMA'],
-                                            ['value' => '5', 'label' => 'D3'],
-                                            ['value' => '6', 'label' => 'S1'],
-                                            ['value' => '7', 'label' => 'S2'],
-                                            ['value' => '8', 'label' => 'S3']
-                                        ]"
-                                        class="border-gray-300 rounded-md shadow-sm" required />
-                                    
-                                    <x-input-select wire:model="formData.pekerjaan_id" label="Pekerjaan"
-                                        placeholder="Pilih pekerjaan"
-                                        :options="[
-                                            ['value' => '1', 'label' => 'PNS'],
-                                            ['value' => '2', 'label' => 'Guru'],
-                                            ['value' => '3', 'label' => 'Mahasiswa'],
-                                            ['value' => '4', 'label' => 'Pelajar'],
-                                            ['value' => '5', 'label' => 'Petani'],
-                                            ['value' => '6', 'label' => 'Wirausaha'],
-                                            ['value' => '7', 'label' => 'Tidak Bekerja']
-                                        ]"
-                                        class="border-gray-300 rounded-md shadow-sm" />
-                                    
-                                    <x-input-select wire:model="formData.kewarganegaraan" label="Kewarganegaraan"
-                                        :options="[
-                                            ['value' => 'WNI', 'label' => 'Warga Negara Indonesia'],
-                                            ['value' => 'WNA', 'label' => 'Warga Negara Asing']
-                                        ]"
-                                        class="border-gray-300 rounded-md shadow-sm" required />
+                            <!-- Data Alamat & Lainnya -->
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Identitas</h4>
+                                
+                                <x-input-select wire:model="formData.golongan_darah" label="Golongan Darah"
+                                    placeholder="Pilih golongan darah"
+                                    :options="[
+                                        ['value' => 'A', 'label' => 'A'],
+                                        ['value' => 'B', 'label' => 'B'],
+                                        ['value' => 'AB', 'label' => 'AB'],
+                                        ['value' => 'O', 'label' => 'O']
+                                    ]"
+                                    class="border-gray-300 rounded-md shadow-sm" required />
+                                
+                                <x-input-select wire:model="formData.agama_id" label="Agama"
+                                    placeholder="Pilih agama"
+                                    :options="[
+                                        ['value' => '1', 'label' => 'Islam'],
+                                        ['value' => '2', 'label' => 'Kristen'],
+                                        ['value' => '3', 'label' => 'Katolik'],
+                                        ['value' => '4', 'label' => 'Hindu'],
+                                        ['value' => '5', 'label' => 'Buddha'],
+                                        ['value' => '6', 'label' => 'Konghucu']
+                                    ]"
+                                    class="border-gray-300 rounded-md shadow-sm" required />
+                                
+                                <x-input-select wire:model="formData.pendidikan_terakhir_id" label="Pendidikan Terakhir"
+                                    placeholder="Pilih pendidikan terakhir"
+                                    :options="[
+                                        ['value' => '1', 'label' => 'Tidak/Belum Sekolah'],
+                                        ['value' => '2', 'label' => 'SD'],
+                                        ['value' => '3', 'label' => 'SMP'],
+                                        ['value' => '4', 'label' => 'SMA'],
+                                        ['value' => '5', 'label' => 'D3'],
+                                        ['value' => '6', 'label' => 'S1'],
+                                        ['value' => '7', 'label' => 'S2'],
+                                        ['value' => '8', 'label' => 'S3']
+                                    ]"
+                                    class="border-gray-300 rounded-md shadow-sm" required />
+                                
+                                <x-input-select wire:model="formData.pekerjaan_id" label="Pekerjaan"
+                                    placeholder="Pilih pekerjaan"
+                                    :options="[
+                                        ['value' => '1', 'label' => 'PNS'],
+                                        ['value' => '2', 'label' => 'Guru'],
+                                        ['value' => '3', 'label' => 'Mahasiswa'],
+                                        ['value' => '4', 'label' => 'Pelajar'],
+                                        ['value' => '5', 'label' => 'Petani'],
+                                        ['value' => '6', 'label' => 'Wirausaha'],
+                                        ['value' => '7', 'label' => 'Tidak Bekerja']
+                                    ]"
+                                    class="border-gray-300 rounded-md shadow-sm" />
+                                
+                                <x-input-select wire:model="formData.kewarganegaraan" label="Kewarganegaraan"
+                                    :options="[
+                                        ['value' => 'WNI', 'label' => 'Warga Negara Indonesia'],
+                                        ['value' => 'WNA', 'label' => 'Warga Negara Asing']
+                                    ]"
+                                    class="border-gray-300 rounded-md shadow-sm" required />
+                            </div>
+                        </div>
 
-                                    <!-- Dokumen Imigrasi (kondisional untuk WNA) -->
-                                    @if(($formData['kewarganegaraan'] ?? '') === 'WNA')
-                                        <x-input-text wire:model="formData.no_paspor" label="No. Paspor" 
-                                            placeholder="Masukkan nomor paspor"
-                                            class="border-gray-300 rounded-md shadow-sm" />
-                                        
-                                        <x-input-text wire:model="formData.no_kitap" label="No. KITAP" 
-                                            placeholder="Masukkan nomor KITAP"
-                                            class="border-gray-300 rounded-md shadow-sm" />
+                        <!-- Data Dokumen Imigrasi -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Dokumen Imigrasi (Opsional)</h4>
+                                
+                                <x-input-text wire:model="formData.no_paspor" label="No. Paspor" 
+                                    placeholder="Masukkan nomor paspor (jika ada)"
+                                    class="border-gray-300 rounded-md shadow-sm" />
+                                
+                                @if($formData['kewarganegaraan'] ?? '' === 'WNA')
+                                    <x-input-text wire:model="formData.no_kitap" label="No. KITAP" 
+                                        placeholder="Masukkan nomor KITAP"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+                                @endif
+                            </div>
+
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">&nbsp;</h4>
+                                <div class="text-sm text-gray-600 space-y-2">
+                                    <p class="italic">* Dokumen imigrasi bersifat opsional dan hanya perlu diisi jika tersedia</p>
+                                    @if($formData['kewarganegaraan'] ?? '' === 'WNA')
+                                        <p class="text-blue-600 font-medium">📋 KITAP diperlukan untuk Warga Negara Asing</p>
+                                    @elseif($formData['kewarganegaraan'] ?? '' === 'WNI')
+                                        <p class="text-green-600 font-medium">🇮🇩 KITAP tidak diperlukan untuk Warga Negara Indonesia</p>
                                     @endif
                                 </div>
                             </div>
+                        </div>
 
                             <!-- Data KK & Keluarga -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
@@ -338,44 +346,49 @@
                                 </div>
                             </div>
 
-                            <!-- Data Pernikahan & Status -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                                <div class="space-y-4">
-                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Pernikahan</h4>
-                                    
-                                    <!-- Tanggal Perkawinan (kondisional) -->
-                                    @if(($formData['status_perkawinan'] ?? '') === 'Kawin')
-                                        <x-input-date wire:model="formData.tanggal_perkawinan" label="Tanggal Perkawinan"
-                                            class="border-gray-300 rounded-md shadow-sm" />
-                                    @endif
-                                    
-                                    <!-- Tanggal Perceraian (kondisional) -->
-                                    @if(in_array($formData['status_perkawinan'], ['Cerai Hidup', 'Cerai Mati']))
-                                        <x-input-date wire:model="formData.tanggal_perceraian" label="Tanggal Perceraian"
-                                            class="border-gray-300 rounded-md shadow-sm" />
-                                    @endif
-                                </div>
+                        <!-- Data Pernikahan & Status -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Data Pernikahan</h4>
+                                
+                                <x-input-select wire:model.live="formData.status_perkawinan" label="Status Pernikahan"
+                                    placeholder="Pilih status pernikahan"
+                                    :options="[
+                                        ['value' => 'Belum Kawin', 'label' => 'Belum Kawin'],
+                                        ['value' => 'Kawin', 'label' => 'Kawin'],
+                                        ['value' => 'Cerai Hidup', 'label' => 'Cerai Hidup'],
+                                        ['value' => 'Cerai Mati', 'label' => 'Cerai Mati']
+                                    ]"
+                                    class="border-gray-300 rounded-md shadow-sm" required />
+                                
+                                @if($formData['status_perkawinan'] ?? '' === 'Kawin')
+                                    <x-input-date wire:model="formData.tanggal_perkawinan" label="Tanggal Perkawinan"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+                                @elseif(in_array($formData['status_perkawinan'] ?? '', ['Cerai Hidup', 'Cerai Mati']))
+                                    <x-input-date wire:model="formData.tanggal_perceraian" label="Tanggal Cerai"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+                                @endif
+                            </div>
 
-                                <div class="space-y-4">
-                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Status Khusus</h4>
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Status Khusus</h4>
+                                
+                                <!-- Penyandang Disabilitas -->
+                                <div class="space-y-2">
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" wire:model.live="formData.penyandang_disabilitas"
+                                            class="form-checkbox h-5 w-5 text-[#376CB4] rounded focus:ring-[#376CB4] border-gray-300">
+                                        <span class="ml-2 text-sm font-medium text-gray-700">Penyandang Disabilitas</span>
+                                    </label>
                                     
-                                    <!-- Penyandang Disabilitas -->
-                                    <div class="space-y-2">
-                                        <label class="inline-flex items-center">
-                                            <input type="checkbox" wire:model.live="formData.penyandang_disabilitas"
-                                                class="form-checkbox h-5 w-5 text-[#376CB4] rounded focus:ring-[#376CB4] border-gray-300">
-                                            <span class="ml-2 text-sm font-medium text-gray-700">Penyandang Disabilitas</span>
-                                        </label>
-                                    </div>
-
-                                    <!-- Detail Disabilitas (kondisional) -->
                                     @if($formData['penyandang_disabilitas'] ?? false)
                                         <x-input-text wire:model="formData.detail_disabilitas" label="Detail Disabilitas" 
-                                            placeholder="Masukkan detail disabilitas"
-                                            class="border-gray-300 rounded-md shadow-sm" />
+                                            placeholder="Jelaskan jenis disabilitas"
+                                            class="border-gray-300 rounded-md shadow-sm mt-2" />
                                     @endif
                                 </div>
                             </div>
+                        </div>
 
                             <!-- Modal Footer -->
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse mt-6 -mx-6 -mb-4">
