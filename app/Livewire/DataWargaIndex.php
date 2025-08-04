@@ -306,7 +306,7 @@ class DataWargaIndex extends Component {
             
             if (!empty($this->filterTag)) {
                 if ($this->filterTag === 'Penyandang Disabilitas') {
-                    $query->where('penyandang_disabilitas', true);
+                    $query->whereNotNull('penyandang_disabilitas');
                 }
             }
         }
