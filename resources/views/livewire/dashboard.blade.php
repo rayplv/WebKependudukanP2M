@@ -153,7 +153,8 @@
                 </div>
                 <div class="ml-3">
                     <p class="text-sm opacity-90 font-medium">Bekerja</p>
-                    <p class="text-lg font-bold opacity-0 animate-[countUp_1.5s_ease-out_forwards]">{{ number_format($dataVisualisasi['pekerjaan']['PNS'] + $dataVisualisasi['pekerjaan']['Swasta'] + $dataVisualisasi['pekerjaan']['Wiraswasta'] + $dataVisualisasi['pekerjaan']['Petani']) }}</p>
+                    <p class="text-lg font-bold opacity-0 animate-[countUp_1.5s_ease-out_forwards]">{{ number_format(array_sum($dataVisualisasi['pekerjaan'])) }}
+</p>
                 </div>
             </div>
         </x-card>
@@ -171,7 +172,7 @@
         </x-card>
     </div>
 
-    <x-card class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <!-- <x-card class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
             Aktivitas Terbaru
         </h2>
@@ -293,7 +294,7 @@
                 </tbody>
             </table>
         </div>
-    </x-card>
+    </x-card> -->
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -395,19 +396,9 @@
         new Chart(pekerjaanCtx, {
             type: 'bar',
             data: {
-                labels: [
-                    'PNS', 'Swasta', 'Wiraswasta', 
-                    'Petani', 'Ibu Rumah Tangga', 'Pelajar/Mahasiswa'
-                ],
+                labels: {!! json_encode(array_keys($dataVisualisasi['pekerjaan'])) !!},
                 datasets: [{
-                    data: [
-                        {{ $dataVisualisasi['pekerjaan']['PNS'] }},
-                        {{ $dataVisualisasi['pekerjaan']['Swasta'] }},
-                        {{ $dataVisualisasi['pekerjaan']['Wiraswasta'] }},
-                        {{ $dataVisualisasi['pekerjaan']['Petani'] }},
-                        {{ $dataVisualisasi['pekerjaan']['Ibu Rumah Tangga'] }},
-                        {{ $dataVisualisasi['pekerjaan']['Pelajar/Mahasiswa'] }}
-                    ],
+                    data: {!! json_encode(array_values($dataVisualisasi['pekerjaan'])) !!},
                     backgroundColor: [
                         '#376CB4', '#2D9BB9', '#699CCF', 
                         '#4E347E', '#EE53A3', '#62C7E2'
