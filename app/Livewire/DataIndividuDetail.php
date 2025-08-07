@@ -98,7 +98,6 @@ class DataIndividuDetail extends Component {
         // Handle penyandang_disabilitas checkbox
         $this->editFormData['penyandang_disabilitas_check'] = !empty($this->editFormData['penyandang_disabilitas']) ? true : false;
 
-        // $this->editFormData = $this->resident->toArray();
 
         // Pastikan format tanggal_lahir sesuai input type="date"
         if (!empty($this->resident->tanggal_lahir)) {
@@ -124,45 +123,43 @@ class DataIndividuDetail extends Component {
             $this->showEditModal = true;
         }
     
-        public function checkKKExists()
-{
-    $noKK = $this->editFormData['no_kk_id'] ?? '';
-    
-    if (strlen($noKK) !== 16) {
-        session()->flash('message', 'No. KK harus 16 digit.');
-        return;
-    }
-    
-    $this->checkingKK = true;
-    
-    $kk = DataKeluarga::find($noKK);
-    
-    if ($kk) {
-        $this->kkExists = true;
-        // Load KK data
-        $this->kkData = [
-            'alamat' => $kk->alamat,
-            'rt' => $kk->rt,
-            'rw' => $kk->rw,
-            'tanggal_dikeluarkan' => $kk->tanggal_dikeluarkan ? 
-                \Carbon\Carbon::parse($kk->tanggal_dikeluarkan)->format('Y-m-d') : null
-        ];
-    } else {
-        $this->kkExists = false;
-        // Reset KK data for new input
-        $this->kkData = [
-            'alamat' => '',
-            'rt' => '',
-            'rw' => '',
-            'tanggal_dikeluarkan' => ''
-        ];
-    }
-    
+    public function checkKKExists()
+    {
+        $noKK = $this->editFormData['no_kk_id'] ?? '';
+        
+        if (strlen($noKK) !== 16) {
+            session()->flash('message', 'No. KK harus 16 digit.');
+            return;
+        }
+        
+        $this->checkingKK = true;
+        
+        $kk = DataKeluarga::find($noKK);
+        
+        if ($kk) {
+            $this->kkExists = true;
+            // Load KK data
+            $this->kkData = [
+                'alamat' => $kk->alamat,
+                'rt' => $kk->rt,
+                'rw' => $kk->rw,
+                'tanggal_dikeluarkan' => $kk->tanggal_dikeluarkan ? 
+                    \Carbon\Carbon::parse($kk->tanggal_dikeluarkan)->format('Y-m-d') : null
+            ];
+        } else {
+            $this->kkExists = false;
+            // Reset KK data for new input
+            $this->kkData = [
+                'alamat' => '',
+                'rt' => '',
+                'rw' => '',
+                'tanggal_dikeluarkan' => ''
+            ];
+        }
     $this->checkingKK = false;
 }
     
     public function closeEditModal() {
-        $this->showEditModal = false;
         $this->showEditModal = false;
         $this->kkExists = null;
         $this->checkingKK = false;
@@ -249,57 +246,57 @@ class DataIndividuDetail extends Component {
             }
             
             $oldNik = $this->resident->nik;
-        $newNik = $this->editFormData['nik'];
-        
-        // Handle KK changes
-        $noKK = $this->editFormData['no_kk_id'];
-        $kkChanged = $noKK !== $this->originalKKId;
-        
-        // Check if KK exists
-        $kk = DataKeluarga::find($noKK);
-        
-        if (!$kk) {
-            // Create new KK if it doesn't exist
-            DataKeluarga::create([
-                'no_kk' => $noKK,
-                'alamat' => $this->kkData['alamat'],
-                'rt' => $this->kkData['rt'],
-                'rw' => $this->kkData['rw'],
-                'tanggal_dikeluarkan' => $this->kkData['tanggal_dikeluarkan'] ?: null,
-            ]);
-        } else if (!$kkChanged) {
-            // Update existing KK if KK ID wasn't changed
-            $kk->update([
-                'alamat' => $this->kkData['alamat'],
-                'rt' => $this->kkData['rt'],
-                'rw' => $this->kkData['rw'],
-                'tanggal_dikeluarkan' => $this->kkData['tanggal_dikeluarkan'] ?: $kk->tanggal_dikeluarkan,
-            ]);
+            $newNik = $this->editFormData['nik'];
+            
+            // Handle KK changes
+            $noKK = $this->editFormData['no_kk_id'];
+            $kkChanged = $noKK !== $this->originalKKId;
+            
+            // Check if KK exists
+            $kk = DataKeluarga::find($noKK);
+            
+            if (!$kk) {
+                // Create new KK if it doesn't exist
+                DataKeluarga::create([
+                    'no_kk' => $noKK,
+                    'alamat' => $this->kkData['alamat'],
+                    'rt' => $this->kkData['rt'],
+                    'rw' => $this->kkData['rw'],
+                    'tanggal_dikeluarkan' => $this->kkData['tanggal_dikeluarkan'] ?: null,
+                ]);
+            } else if (!$kkChanged) {
+                // Update existing KK if KK ID wasn't changed
+                $kk->update([
+                    'alamat' => $this->kkData['alamat'],
+                    'rt' => $this->kkData['rt'],
+                    'rw' => $this->kkData['rw'],
+                    'tanggal_dikeluarkan' => $this->kkData['tanggal_dikeluarkan'] ?: $kk->tanggal_dikeluarkan,
+                ]);
+            }
+            
+            // Update resident data
+            $resident = DataPribadi::findOrFail($this->residentId);
+            $resident->update($this->editFormData);
+            
+            session()->flash('message', 'Data warga berhasil diperbarui!');
+            session()->flash('type', 'success');
+            
+            // Close modal
+            $this->closeEditModal();
+            
+            // If NIK changed, redirect to the new URL
+            if ($oldNik !== $newNik) {
+                return redirect()->route('data-warga.show', $newNik);
+            }
+            
+            // Otherwise just reload the current data
+            $this->mount($this->residentId);
+            
+        } catch (\Exception $e) {
+            session()->flash('message', 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage());
+            session()->flash('type', 'error');
         }
-        
-        // Update resident data
-        $resident = DataPribadi::findOrFail($this->residentId);
-        $resident->update($this->editFormData);
-        
-        session()->flash('message', 'Data warga berhasil diperbarui!');
-        session()->flash('type', 'success');
-        
-        // Close modal
-        $this->closeEditModal();
-        
-        // If NIK changed, redirect to the new URL
-        if ($oldNik !== $newNik) {
-            return redirect()->route('data-warga.show', $newNik);
-        }
-        
-        // Otherwise just reload the current data
-        $this->mount($this->residentId);
-        
-    } catch (\Exception $e) {
-        session()->flash('message', 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage());
-        session()->flash('type', 'error');
     }
-}
 
     public function hapusData() {
         // Check permissions before allowing delete

@@ -41,19 +41,19 @@
                             <td class="px-4 py-3 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <x-heroicon-o-user class="h-4 w-4 mr-2 text-gray-400" />
-                                    <span class="text-sm font-medium text-gray-900">{{ $account->nama }}</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ $account->name }}</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">{{ $account->email }}</td>
                             <td class="px-4 py-3 whitespace-nowrap">
                                 <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full 
                                     {{ $account->role === 'aktif' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
-                                    {{ ucfirst($account->role) }}
+                                    {{ ucfirst($account->role->name ?? '') }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex justify-end space-x-2">
-                                    <button wire:click="editAccount({{ $account->id }})" 
+                                    <button wire:click="openEditModal({{ $account->id }})" 
                                         class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors duration-150 text-xs font-medium">
                                         <x-heroicon-o-pencil class="h-4 w-4 mr-1" />
                                         Edit
@@ -81,6 +81,7 @@
         </div>
     </x-card>
 
+    @if($showTambahModal == true)
     <!-- Modal Tambah Akun -->
     <div x-data="{ show: @entangle('showTambahModal') }" x-show="show" x-cloak
         class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -112,25 +113,30 @@
                     </div>
 
                     <form wire:submit.prevent="simpanAkun" class="space-y-4">
-                        <x-input-text wire:model="formData.nama" label="Nama Lengkap" placeholder="Masukkan nama lengkap"
+                        <x-input-text wire:model="formData.name" label="Nama Lengkap" placeholder="Masukkan nama lengkap"
                             class="border-gray-300 rounded-md shadow-sm" required />
+                        @error('formData.name')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                         
                         <x-input-text wire:model="formData.email" label="Email" type="email" placeholder="Masukkan email"
                             class="border-gray-300 rounded-md shadow-sm" required />
+                        @error('formData.email')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                         
                         <x-input-text wire:model="formData.password" label="Password" type="password" placeholder="Masukkan password"
                             class="border-gray-300 rounded-md shadow-sm" required />
+                        @error('formData.password')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                         
                         <x-input-text wire:model="formData.password_confirmation" label="Konfirmasi Password" type="password" placeholder="Masukkan ulang password"
                             class="border-gray-300 rounded-md shadow-sm" required />
+                        @error('formData.password_confirmation')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                         
-                        <x-input-select wire:model="formData.role" label="Role"
-                            placeholder="Pilih role pengguna"
-                            :options="[
-                                ['value' => 'aktif', 'label' => 'Aktif'],
-                                ['value' => 'suspended', 'label' => 'Suspended']
-                            ]"
-                            class="border-gray-300 rounded-md shadow-sm" required />
 
                         <!-- Modal Footer -->
                         <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse mt-6 -mx-6 -mb-4">
@@ -150,6 +156,81 @@
             </div>
         </div>
     </div>
+    @endif
+
+    @if($showEditModal == true)
+    <!-- Modal Edit Akun -->
+    <div x-data="{ show: @entangle('showEditModal') }" x-show="show" x-cloak
+        class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div x-show="show" x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                
+                <div class="bg-white px-6 pt-6 pb-4 sm:p-6 sm:pb-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-[#4E347E]" id="modal-title">
+                            <x-heroicon-o-user-plus class="h-6 w-6 inline mr-2 text-[#376CB4]" />
+                            Edit Akun
+                        </h3>
+                        <button wire:click="closeEditModal" class="text-gray-400 hover:text-gray-600">
+                            <x-heroicon-o-x-mark class="h-6 w-6" />
+                        </button>
+                    </div>
+
+                    <form wire:submit.prevent="editAccount" class="space-y-4">
+                        <x-input-text wire:model="editFormData.name" label="Nama Lengkap" placeholder="Masukkan nama lengkap"
+                            class="border-gray-300 rounded-md shadow-sm" required />
+                            @error('editFormData.name')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        <x-input-text wire:model="editFormData.email" label="Email" type="email" placeholder="Masukkan email"
+                            class="border-gray-300 rounded-md shadow-sm" required />
+                            @error('editFormData.email')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        <x-input-text wire:model="editFormData.password" label="Password" type="password" placeholder="Masukkan password"
+                            class="border-gray-300 rounded-md shadow-sm" required />
+                        @error('editFormData.password')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+
+                        <x-input-text wire:model="editFormData.password_confirmation" label="Konfirmasi Password" type="password" placeholder="Masukkan ulang password"
+                            class="border-gray-300 rounded-md shadow-sm" required />
+                        @error('editFormData.password_confirmation')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+
+                        <!-- Modal Footer -->
+                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse mt-6 -mx-6 -mb-4">
+                            <x-button type="submit" variant="primary"
+                                class="w-full sm:w-auto sm:ml-3 bg-[#376CB4] hover:bg-[#457BC5] text-white">
+                                <x-heroicon-o-check class="h-5 w-5 mr-2" />
+                                Edit Akun
+                            </x-button>
+                            <x-button wire:click="closeEditModal" type="button" variant="secondary"
+                                class="mt-3 sm:mt-0 w-full sm:w-auto bg-gray-200 hover:bg-gray-300 text-gray-700">
+                                <x-heroicon-o-x-mark class="h-5 w-5 mr-2" />
+                                Batal
+                            </x-button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Delete Account Confirmation Modal -->
     <div id="deleteAccountModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">

@@ -50,7 +50,7 @@
         {{-- Bottom Menu --}}
         <ul class="space-y-2 pt-6 border-t border-white border-opacity-30">
             @auth
-                @if(Auth::user()->role_id === 3)
+                @if(Auth::user()->role_id === 1)
                     <li>
                         <a href="{{ route('manajemen-akun') }}"
                             class="flex items-center p-3 rounded-xl transition-all duration-300 group relative

@@ -1,14 +1,13 @@
 <?php
 namespace App\Livewire;
 
+use App\Models\User;
 use Livewire\Component;
 
 class ManajemenAkun extends Component {
-    // For backend:
-    // protected $listeners = ['accountAdded' => '$refresh'];
-
-    // Modal properties
     public $showTambahModal = false;
+    public $showEditModal = false;
+    public $UserId;
     public $formData = [
         'nama' => '',
         'email' => '',
@@ -16,6 +15,7 @@ class ManajemenAkun extends Component {
         'password_confirmation' => '',
         'role' => ''
     ];
+    public $editFormData = [];
 
     public function openTambahModal() {
         $this->showTambahModal = true;
@@ -27,77 +27,113 @@ class ManajemenAkun extends Component {
         $this->resetFormData();
     }
 
+    public function openEditModal($id) {
+        $this->showEditModal = true;
+        $this->UserId = $id;
+        $this->editFormData = User::find($id)->toArray();
+    }
+
+    public function closeEditModal() {
+        $this->showEditModal = false;
+        $this->UserId = null;
+        $this->resetEditFormData();
+    }
+
     public function resetFormData() {
         $this->formData = [
             'nama' => '',
             'email' => '',
             'password' => '',
             'password_confirmation' => '',
-            'role' => ''
         ];
+    }
+    public function resetEditFormData() {
+        $this->editFormData = [];
     }
 
     public function simpanAkun() {
         // Validasi data
         $this->validate([
-            'formData.nama' => 'required|string|max:255',
-            'formData.email' => 'required|email|max:255',
+            'formData.name' => 'required|string|max:255',
+            'formData.email' => 'required|email|max:255|unique:users,email',
             'formData.password' => 'required|string|min:8',
             'formData.password_confirmation' => 'required|same:formData.password',
-            'formData.role' => 'required|string'
         ], [
-            'formData.nama.required' => 'Nama wajib diisi',
+            'formData.name.required' => 'Nama wajib diisi',
             'formData.email.required' => 'Email wajib diisi',
             'formData.email.email' => 'Format email tidak valid',
             'formData.password.required' => 'Password wajib diisi',
             'formData.password.min' => 'Password minimal 8 karakter',
             'formData.password_confirmation.required' => 'Konfirmasi password wajib diisi',
             'formData.password_confirmation.same' => 'Konfirmasi password tidak sama',
-            'formData.role.required' => 'Role wajib dipilih'
         ]);
 
-        // Untuk backend: simpan ke database
-        // User::create([
-        //     'name' => $this->formData['nama'],
-        //     'email' => $this->formData['email'],
-        //     'password' => Hash::make($this->formData['password']),
-        //     'role' => $this->formData['role']
-        // ]);
+        // Simpan data akun baru
+        $this->formData['role_id'] = '2';
+
+        User::create($this->formData);
 
         // Untuk frontend: tampilkan pesan sukses
         session()->flash('message', 'Akun baru berhasil dibuat!');
         session()->flash('type', 'success');
 
+        $this->resetFormData();
         $this->closeTambahModal();
     }
 
     public function render() {
-        // For backend:
-        // $accounts = User::whereIn('role', ['Petugas A', 'Petugas B'])->get(); // Example: fetch user accounts with specific roles
+        $query = User::with('role');
 
-        // Dummy data for frontend
-        $accounts = collect([
-            (object) ['id' => 1, 'nama' => 'Petugas A', 'email' => 'admindata@mail.com', 'role' => 'aktif'],
-            (object) ['id' => 2, 'nama' => 'Petugas B', 'email' => 'adminverif@mail.com', 'role' => 'suspended'],
-        ]);
-
+        $accounts = $query->get();
         return view('livewire.manajemen-akun', compact('accounts'));
     }
 
-    public function editAccount($id) {
-        // For backend: Redirect to edit account page
-        // return redirect()->route('manajemen-akun.edit', $id);
-        // For frontend:
-        session()->flash('message', "Fitur edit akun ID: {$id} akan diimplementasikan oleh backend.");
+    public function editAccount() {
+        // Validate data
+        $validationRules = [
+            'editFormData.name' => 'required|string|max:255',
+            'editFormData.email' => 'required|email|max:255|unique:users,email,'.$this->UserId,
+        ];
+        
+        $validationMessages = [
+            'editFormData.name.required' => 'Nama wajib diisi',
+            'editFormData.email.required' => 'Email wajib diisi',
+            'editFormData.email.email' => 'Format email tidak valid',
+            'editFormData.email.unique' => 'Email sudah digunakan',
+        ];
+        
+        $validationRules['editFormData.password'] = 'string|min:8';
+        $validationRules['editFormData.password_confirmation'] = 'required|same:editFormData.password';
+        
+        $validationMessages['editFormData.password.min'] = 'Password minimal 8 karakter';
+        $validationMessages['editFormData.password_confirmation.required'] = 'Konfirmasi password wajib diisi';
+        $validationMessages['editFormData.password_confirmation.same'] = 'Konfirmasi password tidak sama';
+        
+        $this->validate($validationRules, $validationMessages);
+
+        $akunUser = User::findOrFail($this->UserId);
+        
+        $akunUser->update($this->editFormData);
+
+        $this->closeEditModal();
+
+        session()->flash('message', 'Data berhasil di Update.');
+        session()->flash('type', 'success');
     }
 
     public function deleteAccount($id) {
-        // For backend: Delete account logic, show confirmation
-        // if (confirm('Are you sure you want to delete this account?')) {
-        //     User::destroy($id);
-        //     session()->flash('message', 'Akun berhasil dihapus.');
-        // }
-        // For frontend:
-        session()->flash('message', "Fitur hapus akun ID: {$id} akan diimplementasikan oleh backend.");
+        try {
+            // Find and delete the user
+            $user = User::findOrFail($id);
+            $user->delete();
+
+            session()->flash('message', 'Data pengguna berhasil dihapus!');
+            session()->flash('type', 'success');
+            
+            return redirect()->route('manajemen-akun');
+        } catch (\Exception $e) {
+            session()->flash('message', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+            session()->flash('type', 'error');
+        }
     }
 }
