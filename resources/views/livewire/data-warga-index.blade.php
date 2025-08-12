@@ -133,7 +133,7 @@
                             <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">{{ $data->tempat_tanggal_lahir }}</td>
                             <td class="px-4 py-3 whitespace-nowrap">
                                 <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full 
-                                    {{ $data->jenis_kelamin === 'Laki-laki' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-pink-50 text-pink-700 border border-pink-200' }}">
+                                    {{ $data->jenis_kelamin === 'LAKI-LAKI' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-pink-50 text-pink-700 border border-pink-200' }}">
                                     {{ $data->jenis_kelamin }}
                                 </span>
                             </td>

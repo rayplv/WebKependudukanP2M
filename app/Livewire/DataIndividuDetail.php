@@ -203,6 +203,11 @@ class DataIndividuDetail extends Component {
     ];
     
     public function updateDataWarga() {
+        if (!Auth::check() || !Auth::user()->hasPermission('edit-residents')) {
+            session()->flash('message', 'Anda tidak memiliki izin untuk mengedit data.');
+            session()->flash('type', 'error');
+            return;
+        }
         // Special validation for the unique NIK (except the current resident)
         $uniqueNikRule = 'required|digits:16|unique:data_pribadi,nik,' . $this->residentId . ',nik';
         $this->validate(array_merge($this->rules, [

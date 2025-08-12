@@ -17,22 +17,21 @@
                 @endauth
             </div>
             <div class="flex flex-col items-end gap-3">
-                <div class="flex space-x-2">
-                    <!-- Replace the existing edit button with this one -->
-                    <button wire:click="editData" type="button"
-                        class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 text-sm font-medium">
-                        <x-heroicon-o-pencil class="h-4 w-4 mr-2" />
-                        Edit Data
-                    </button>
-                    <button onclick="confirmDelete()" type="button"
-                        class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-sm font-medium">
-                        <x-heroicon-o-trash class="h-4 w-4 mr-2" />
-                        Hapus Data
-                    </button>
-                </div>
-                <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-[#C5B6E1] text-[#4E347E]">
-                    Status: Hidup
-                </span>
+                @auth
+                    <div class="flex space-x-2">
+                        <!-- Replace the existing edit button with this one -->
+                        <button wire:click="editData" type="button"
+                            class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 text-sm font-medium">
+                            <x-heroicon-o-pencil class="h-4 w-4 mr-2" />
+                            Edit Data
+                        </button>
+                        <button onclick="confirmDelete()" type="button"
+                            class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-sm font-medium">
+                            <x-heroicon-o-trash class="h-4 w-4 mr-2" />
+                            Hapus Data
+                        </button>
+                    </div>
+                @endauth
             </div>
         </div>
 

@@ -22,7 +22,7 @@ return new class extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('route')->unique();
+            $table->string('route');
             $table->timestamps();
         });
 

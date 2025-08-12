@@ -32,6 +32,7 @@
                         <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Nama</th>
                         <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Email</th>
                         <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Role</th>
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
                         <th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Aksi</th>
                     </tr>
                 </thead>
@@ -47,12 +48,31 @@
                             <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">{{ $account->email }}</td>
                             <td class="px-4 py-3 whitespace-nowrap">
                                 <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full 
-                                    {{ $account->role === 'aktif' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
+                                    bg-gray-50 text-gray-700 border border-green-200'">
                                     {{ ucfirst($account->role->name ?? '') }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full 
+                                    {{ $account->status === 'active' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
+                                    {{ $account->status }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex justify-end space-x-2">
+                                    @if($account->status == 'active')
+                                        <button wire:click="suspendAccount({{ $account->id }})" 
+                                            class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 border border-red-300 rounded-md hover:bg-red-200 transition-colors duration-150 text-xs font-medium">
+                                            <x-heroicon-o-pencil class="h-4 w-4 mr-1" />
+                                            Suspend
+                                        </button>
+                                    @elseif ($account->status == 'suspended')
+                                        <button wire:click="activateAccount({{ $account->id }})" 
+                                            class="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-700 border border-green-300 rounded-md hover:bg-green-200 transition-colors duration-150 text-xs font-medium">
+                                            <x-heroicon-o-pencil class="h-4 w-4 mr-1" />
+                                            Aktifkan
+                                        </button>
+                                    @endif
                                     <button wire:click="openEditModal({{ $account->id }})" 
                                         class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors duration-150 text-xs font-medium">
                                         <x-heroicon-o-pencil class="h-4 w-4 mr-1" />

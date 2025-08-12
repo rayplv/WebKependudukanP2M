@@ -3,6 +3,7 @@ namespace App\Livewire;
 
 use App\Models\User;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class ManajemenAkun extends Component {
     public $showTambahModal = false;
@@ -18,6 +19,11 @@ class ManajemenAkun extends Component {
     public $editFormData = [];
 
     public function openTambahModal() {
+        if (!Auth::check() || !Auth::user()->hasPermission('add-users')) {
+            session()->flash('message', 'Anda tidak memiliki izin untuk menambah data.');
+            session()->flash('type', 'error');
+            return;
+        }
         $this->showTambahModal = true;
         $this->resetFormData();
     }
@@ -28,6 +34,11 @@ class ManajemenAkun extends Component {
     }
 
     public function openEditModal($id) {
+        if (!Auth::check() || !Auth::user()->hasPermission('edit-users')) {
+            session()->flash('message', 'Anda tidak memiliki izin untuk mengedit data.');
+            session()->flash('type', 'error');
+            return;
+        }
         $this->showEditModal = true;
         $this->UserId = $id;
         $this->editFormData = User::find($id)->toArray();
@@ -52,6 +63,11 @@ class ManajemenAkun extends Component {
     }
 
     public function simpanAkun() {
+        if (!Auth::check() || !Auth::user()->hasPermission('add-users')) {
+            session()->flash('message', 'Anda tidak memiliki izin untuk menambah data.');
+            session()->flash('type', 'error');
+            return;
+        }
         // Validasi data
         $this->validate([
             'formData.name' => 'required|string|max:255',
@@ -89,10 +105,17 @@ class ManajemenAkun extends Component {
     }
 
     public function editAccount() {
+        if (!Auth::check() || !Auth::user()->hasPermission('edit-users')) {
+            session()->flash('message', 'Anda tidak memiliki izin untuk mengedit data.');
+            session()->flash('type', 'error');
+            return;
+        }
         // Validate data
         $validationRules = [
             'editFormData.name' => 'required|string|max:255',
             'editFormData.email' => 'required|email|max:255|unique:users,email,'.$this->UserId,
+            'editFormData.password' => 'required|string|min:8',
+            'editFormData.password_confirmation' => 'required|same:editFormData.password',
         ];
         
         $validationMessages = [
@@ -100,14 +123,11 @@ class ManajemenAkun extends Component {
             'editFormData.email.required' => 'Email wajib diisi',
             'editFormData.email.email' => 'Format email tidak valid',
             'editFormData.email.unique' => 'Email sudah digunakan',
+            'editFormData.password.min' => 'Password minimal 8 karakter',
+            'editFormData.password_confirmation.required' => 'Konfirmasi password wajib diisi',
+            'editFormData.password_confirmation.same' => 'Konfirmasi password tidak sama',
         ];
         
-        $validationRules['editFormData.password'] = 'string|min:8';
-        $validationRules['editFormData.password_confirmation'] = 'required|same:editFormData.password';
-        
-        $validationMessages['editFormData.password.min'] = 'Password minimal 8 karakter';
-        $validationMessages['editFormData.password_confirmation.required'] = 'Konfirmasi password wajib diisi';
-        $validationMessages['editFormData.password_confirmation.same'] = 'Konfirmasi password tidak sama';
         
         $this->validate($validationRules, $validationMessages);
 
@@ -122,6 +142,11 @@ class ManajemenAkun extends Component {
     }
 
     public function deleteAccount($id) {
+        if (!Auth::check() || !Auth::user()->hasPermission('delete-users')) {
+            session()->flash('message', 'Anda tidak memiliki izin untuk menghapus data.');
+            session()->flash('type', 'error');
+            return;
+        }
         try {
             // Find and delete the user
             $user = User::findOrFail($id);
@@ -133,6 +158,45 @@ class ManajemenAkun extends Component {
             return redirect()->route('manajemen-akun');
         } catch (\Exception $e) {
             session()->flash('message', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+            session()->flash('type', 'error');
+        }
+    }
+
+    public function suspendAccount($id) {
+        if (!Auth::check() || !Auth::user()->hasPermission('status-users')) {
+            session()->flash('message', 'Anda tidak memiliki izin untuk mengedit status data.');
+            session()->flash('type', 'error');
+            return;
+        }
+        try {
+            // Find the user and update their status
+            $user = User::findOrFail($id);
+            $user->status = 'suspended';
+            $user->save();
+
+            session()->flash('message', 'Akun berhasil disuspend!');
+            session()->flash('type', 'success');
+        } catch (\Exception $e) {
+            session()->flash('message', 'Terjadi kesalahan saat men-suspend akun: ' . $e->getMessage());
+            session()->flash('type', 'error');
+        }
+    }
+    public function activateAccount($id) {
+        if (!Auth::check() || !Auth::user()->hasPermission('status-users')) {
+            session()->flash('message', 'Anda tidak memiliki izin untuk mengedit status data.');
+            session()->flash('type', 'error');
+            return;
+        }
+        try {
+            // Find the user and update their status
+            $user = User::findOrFail($id);
+            $user->status = 'active';
+            $user->save();
+
+            session()->flash('message', 'Akun berhasil diaktifkan!');
+            session()->flash('type', 'success');
+        } catch (\Exception $e) {
+            session()->flash('message', 'Terjadi kesalahan saat mengaktifkan akun: ' . $e->getMessage());
             session()->flash('type', 'error');
         }
     }

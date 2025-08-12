@@ -37,6 +37,13 @@ class RolePermissionSeeder extends Seeder
         $permissions = collect([
             ['name' => 'View Dashboard', 'route' => 'dashboard.*'],
             ['name' => 'Manage Users', 'route' => 'dashboard.administrators.*'],
+            ['name' => 'edit-residents', 'route' => 'datapenduduk.edit-residents'],
+            ['name' => 'delete-residents', 'route' => 'datapenduduk.delete-residents'],
+            ['name' => 'View Management', 'route' => 'kelolaakun.*'],
+            ['name' => 'add-users', 'route' => 'kelolaakun.*'],
+            ['name' => 'edit-users', 'route' => 'kelolaakun.*'],
+            ['name' => 'delete-users', 'route' => 'kelolaakun.*'],
+            ['name' => 'status-users', 'route' => 'kelolaakun.*'],
             // ... other permissions
         ])->map(fn($permission) => Permission::create($permission));
 
@@ -46,7 +53,8 @@ class RolePermissionSeeder extends Seeder
         // Define admin permissions excluding superadmin exclusive permissions
         $adminPermissions = $permissions->filter(fn($permission) => !in_array($permission->name, [
             'Manage Users',
-            // ... other superadmin exclusive permissions
+            'edit-residents',
+            'delete-residents',
         ]));
 
         // Set admin role with limited permissions

@@ -49,6 +49,13 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        if(Auth::user()->status !== 'active') {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Akun telah dinonaktifkan, mohon kontak superadmin untuk mengaktifkan kembali.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

@@ -18,11 +18,13 @@ class UserSeeder extends Seeder
                 'name' => 'Superadmin',
                 'email' => 'superadmin@indragiri.id',
                 'password' => Hash::make('indragiri'),
+                'status' => 'active',
             ],
             [
                 'name' => 'Admin 1',
                 'email' => 'admin1@indragiri.id',
                 'password' => Hash::make('indragiri'),
+                'status' => 'suspended',
             ]
         ]);
     }

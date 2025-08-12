@@ -2,9 +2,9 @@
     title="Login"
     heading="Masuk ke Akun"
 >
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
-
     <form class="space-y-6" method="POST" action="{{ route('login') }}">
         @csrf
         
@@ -65,13 +65,18 @@
                     Ingat saya
                 </label>
             </div>
-
-            <div class="text-sm">
-                <a href="{{ route('password.request') }}" class="font-medium text-[#699CCF] hover:text-[#376CB4] transition-colors duration-200">
-                    Lupa password?
-                </a>
-            </div>
         </div>
+
+        <!-- Authentication Errors -->
+        @if ($errors->any())
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                <ul class="list-disc list-inside text-sm">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <!-- Submit Button -->
         <div>

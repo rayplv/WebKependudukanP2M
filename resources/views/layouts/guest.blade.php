@@ -4,6 +4,7 @@
 ])
 
 <!DOCTYPE html>
+
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="UTF-8">
@@ -35,7 +36,6 @@
                     Sistem Kependudukan
                 </p>
             </div>
-
             <!-- Login Form -->
             <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-8">
                 {{ $slot }}
