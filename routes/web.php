@@ -4,9 +4,6 @@ use App\Livewire\Dashboard;
 use App\Livewire\DataIndividuDetail;
 use App\Livewire\DataWargaIndex;
 use App\Livewire\ManajemenAkun;
-use App\Livewire\TambahAkunBaru;
-use App\Livewire\TambahDataWarga;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Login route
@@ -25,20 +22,5 @@ Route::middleware(['web', 'checkUserStatus'])->group(function () {
     
     Route::get('/manajemen-akun', ManajemenAkun::class)->middleware(['permission:View Management'])->name('manajemen-akun');
 });
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->name('dashboard');
-
-// Route::get('/test', function () {
-//     return view('permissionTest');
-//     // abort(403, 'page not found'); // Menampilkan halaman error 403
-// })->middleware(['auth', 'verified', 'permission:View Dashboard'])->name('test');
-
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
 
 require __DIR__.'/auth.php';
