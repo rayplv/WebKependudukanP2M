@@ -58,6 +58,6 @@ class RolePermissionSeeder extends Seeder
         ]));
 
         // Set admin role with limited permissions
-        $this->setRolePermissions('admin', $adminPermissions, ['admin@indragiri.id']);
+        $this->setRolePermissions('admin', $adminPermissions, ['admin1@indragiri.id']);
     }
 }

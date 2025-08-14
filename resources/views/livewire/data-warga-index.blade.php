@@ -202,7 +202,7 @@
                                             <span class="text-red-600 text-xs">{{ $message }}</span>
                                         @enderror
                                     <div class="space-y-0">
-                                        <label class="block text-sm font-medium text-gray-700">No. KK *</label>
+                                        <label class="block text-sm font-medium text-gray-700">No. KK</label>
                                         <div class="flex gap-2">
                                             <x-input-text wire:model="formData.no_kk_id" 
                                                 placeholder="Masukkan 16 digit No. KK"
@@ -365,35 +365,6 @@
                                 </div>
                             </div>
 
-                            <!-- Data Dokumen Imigrasi -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                                <div class="space-y-4">
-                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Dokumen Imigrasi (Opsional)</h4>
-                                    
-                                    <x-input-text wire:model="formData.no_paspor" label="No. Paspor" 
-                                        placeholder="Masukkan nomor paspor (jika ada)"
-                                        class="border-gray-300 rounded-md shadow-sm" />
-                                    
-                                    @if($formData['kewarganegaraan'] ?? '' === 'WNA')
-                                        <x-input-text wire:model="formData.no_kitap" label="No. KITAP" 
-                                            placeholder="Masukkan nomor KITAP"
-                                            class="border-gray-300 rounded-md shadow-sm" />
-                                    @endif
-                                </div>
-
-                                <div class="space-y-4">
-                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">&nbsp;</h4>
-                                    <div class="text-sm text-gray-600 space-y-2">
-                                        <p class="italic">* Dokumen imigrasi bersifat opsional dan hanya perlu diisi jika tersedia</p>
-                                        @if($formData['kewarganegaraan'] ?? '' === 'WNA')
-                                            <p class="text-blue-600 font-medium">📋 KITAP diperlukan untuk Warga Negara Asing</p>
-                                        @elseif($formData['kewarganegaraan'] ?? '' === 'WNI')
-                                            <p class="text-green-600 font-medium">🇮🇩 KITAP tidak diperlukan untuk Warga Negara Indonesia</p>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Data Pendidikan dan Pekerjaan -->
                             <div class="space-y-4">
                                 <h4 class="text-md font-semibold text-gray-800 border-b pb-2">Pendidikan & Pekerjaan</h4>
@@ -403,11 +374,18 @@
                                         placeholder="Pilih pendidikan terakhir"
                                         :options="$pendidikanOptions ?? []"
                                         class="border-gray-300 rounded-md shadow-sm" required />
+                                        @error('formData.pendidikan_terakhir_id')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
+                                    
 
                                     <x-input-select wire:model="formData.pekerjaan_id" label="Pekerjaan"
                                         placeholder="Pilih pekerjaan"
                                         :options="$pekerjaanOptions ?? []"
                                         class="border-gray-300 rounded-md shadow-sm" required />
+                                        @error('formData.pekerjaan_id')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
                                 </div>
                             </div>
 
@@ -420,22 +398,69 @@
                                         placeholder="Pilih hubungan keluarga"
                                         :options="$hubunganKeluargaOptions ?? []"
                                         class="border-gray-300 rounded-md shadow-sm" required />
+                                        @error('formData.hubungan_keluarga_id')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
 
-                                    <x-input-select wire:model="formData.kewarganegaraan" label="Kewarganegaraan"
+                                    <x-input-select wire:model.live="formData.kewarganegaraan" label="Kewarganegaraan"
                                         placeholder="Pilih kewarganegaraan"
                                         :options="[
                                             ['value' => 'WNI', 'label' => 'WNI'],
                                             ['value' => 'WNA', 'label' => 'WNA']
                                         ]"
                                         class="border-gray-300 rounded-md shadow-sm" required />
+                                        @error('formData.kewarganegaraan')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
 
                                     <x-input-text wire:model="formData.nama_ayah" label="Nama Ayah" 
                                         placeholder="Masukkan nama ayah"
                                         class="border-gray-300 rounded-md shadow-sm" />
+                                        @error('formData.nama_ayah')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
 
                                     <x-input-text wire:model="formData.nama_ibu" label="Nama Ibu" 
                                         placeholder="Masukkan nama ibu"
                                         class="border-gray-300 rounded-md shadow-sm" />
+                                        @error('formData.nama_ibu')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
+                                </div>
+                            </div>
+
+                            <!-- Data Dokumen Imigrasi -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                                <div class="space-y-4">
+                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">Dokumen Imigrasi (Opsional)</h4>
+                                    
+                                    <x-input-text wire:model="formData.no_paspor" label="No. Paspor" 
+                                        placeholder="Masukkan nomor paspor (jika ada)"
+                                        class="border-gray-300 rounded-md shadow-sm" />
+                                    @error('formData.no_paspor')
+                                        <span class="text-red-600 text-xs">{{ $message }}</span>
+                                    @enderror
+
+                                    @if($formData['kewarganegaraan'] ?? '' === 'WNA')
+                                        <x-input-text wire:model="formData.no_kitap" label="No. KITAP" 
+                                            placeholder="Masukkan nomor KITAP"
+                                            class="border-gray-300 rounded-md shadow-sm" />
+                                        @error('formData.no_kitap')
+                                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                                        @enderror
+                                    @endif
+                                </div>
+
+                                <div class="space-y-4">
+                                    <h4 class="font-medium text-[#4E347E] border-b border-[#ADC4DB] pb-2">&nbsp;</h4>
+                                    <div class="text-sm text-gray-600 space-y-2">
+                                        <p class="italic">Dokumen imigrasi bersifat opsional dan hanya perlu diisi jika tersedia</p>
+                                        @if($formData['kewarganegaraan'] ?? '' === 'WNA')
+                                            <p class="text-blue-600 font-medium">📋 KITAP diperlukan untuk Warga Negara Asing</p>
+                                        @elseif($formData['kewarganegaraan'] ?? '' === 'WNI')
+                                            <p class="text-green-600 font-medium">🇮🇩 KITAP tidak diperlukan untuk Warga Negara Indonesia</p>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
 
@@ -456,23 +481,26 @@
                                             <x-input-text wire:model="formData.penyandang_disabilitas" label="Detail Disabilitas" 
                                                 placeholder="Jelaskan jenis disabilitas"
                                                 class="border-gray-300 rounded-md shadow-sm mt-2" />
+                                                @error('formData.penyandang_disabilitas')
+                                                    <span class="text-red-600 text-xs">{{ $message }}</span>
+                                                @enderror
                                         @endif
                                     </div>
-
-                                    @if(($formData['kewarganegaraan'] ?? '') === 'WNA')
-                                        <x-input-text wire:model="formData.no_paspor" label="No. Paspor" 
-                                            placeholder="Masukkan nomor paspor"
-                                            class="border-gray-300 rounded-md shadow-sm" />
-
-                                        <x-input-text wire:model="formData.no_kitap" label="No. KITAP" 
-                                            placeholder="Masukkan nomor KITAP"
-                                            class="border-gray-300 rounded-md shadow-sm" />
-                                    @endif
                                 </div>
                             </div>
 
                             <!-- Footer Modal -->
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t">
+                                @if ($errors->any())
+                                    <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded mb-4">
+                                        <p class="font-medium">Mohon perbaiki kesalahan berikut:</p>
+                                        <ul class="list-disc ml-5 mt-2">
+                                            @foreach ($errors->all() as $error)
+                                                <li class="text-sm">{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
                                 <x-button type="submit" variant="primary"
                                     class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#376CB4] text-base font-medium text-white hover:bg-[#457BC5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#376CB4] sm:ml-3 sm:w-auto sm:text-sm">
                                     Simpan Data Warga

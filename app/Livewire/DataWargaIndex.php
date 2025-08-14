@@ -78,8 +78,6 @@ class DataWargaIndex extends Component {
 
     protected $queryString = ['search', 'filterRW', 'filterRT', 'filterPendidikan', 'filterStatusPernikahan', 'filterTag'];
 
-    // ...existing code...
-
     public function checkKKExists()
     {
         $noKK = $this->formData['no_kk_id'] ?? '';
@@ -140,7 +138,7 @@ class DataWargaIndex extends Component {
             'tanggal_perceraian' => '',
             'pendidikan_terakhir_id' => '',
             'pekerjaan_id' => '',
-            'kewarganegaraan' => 'WNI',
+            'kewarganegaraan' => '',
             'hubungan_keluarga_id' => '',
             'nama_ayah' => '',
             'nama_ibu' => '',

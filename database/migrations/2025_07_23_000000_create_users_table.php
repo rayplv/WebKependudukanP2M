@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('status')->default('active'); // Added status column with default value
+            $table->enum('status', ['active', 'suspended'])->default('active'); // Added status column with default value
             $table->foreignId('role_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
