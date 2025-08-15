@@ -100,7 +100,7 @@ class ManajemenAkun extends Component {
     public function render() {
         $query = User::with('role');
 
-        $accounts = $query->get();
+        $accounts = $query->where('role_id', '2')->get();
         return view('livewire.manajemen-akun', compact('accounts'));
     }
 
