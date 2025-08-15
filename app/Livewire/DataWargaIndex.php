@@ -324,8 +324,6 @@ class DataWargaIndex extends Component {
             ];
             $tagOptions = [
                 'Penyandang Disabilitas' => 'Penyandang Disabilitas',
-                'Lansia' => 'Lansia',
-                'Balita' => 'Balita'
             ];
 
             // Data untuk form options
